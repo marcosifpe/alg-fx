@@ -21,13 +21,6 @@ public class ModelThread extends Thread {
     private final Interpolator interpolator = Interpolator.LINEAR;
     private int operation;
     public final static int BUBBLE_SORT = 1, SELECTION_SORT = 2, INSERTION_SORT = 3;
-    
-//    public ModelThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation) {
-//        this.node1 = node1;
-//        this.node2 = node2;
-//        this.nodes = nodes;
-//        this.operation = operation;
-//    }
 
     public NodeElement getNode1() {
         return node1;

@@ -4,27 +4,18 @@
  */
 package model;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.animation.*;
-import javafx.event.ActionEvent;
+import execution.Main;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.PathBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javax.swing.JOptionPane;
-import execution.Main;
 
 /**
  *
@@ -33,18 +24,11 @@ import execution.Main;
 public class NodeElement {
 
     private StackPane stackPane;
-    private Path path;
-    private PathTransition pathTransition;
     private Circle circle;
     private String element;
     private EventHandler eventHandler;
     private int color;
     private double x, y;
-    private Timeline timeline;
-    private int switchState = 0;
-    private KeyValue keyValue;
-    private KeyFrame keyFrame;
-    private double tempX, tempY;
     private final Interpolator interpolator = Interpolator.LINEAR;
     TranslateTransition translateTransition1, translateTransition2, translateTransition3;
     private double circleRadius;
@@ -54,11 +38,7 @@ public class NodeElement {
 
     public NodeElement(double radius, String element, int operation, double x, double y) {
         EventHandler eventHandler1 = generateEventHandler(operation);
-        timeline = new Timeline();
         circleRadius = radius;
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        path = new Path();
-        pathTransition = new PathTransition();
         this.stackPane = new StackPane();
         this.circle = new Circle(radius, Color.rgb(156, 216, 255));
         this.circle.setEffect(new InnerShadow());
@@ -179,14 +159,6 @@ public class NodeElement {
 
     public void setY(double y) {
         this.y = y;
-    }
-
-    public Timeline getTimeline() {
-        return timeline;
-    }
-
-    public void setTimeline(Timeline timeline) {
-        this.timeline = timeline;
     }
 
     public double getCircleRadius() {

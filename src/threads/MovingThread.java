@@ -26,7 +26,6 @@ public class MovingThread extends Thread {
     NodeElement nodes[];
     Group root;
     private Score score;
-    private HBox horizontalBox;
     private NodeElement node1;
     private NodeElement node2;
     private final Interpolator interpolator = Interpolator.LINEAR;
@@ -200,7 +199,7 @@ public class MovingThread extends Thread {
 
                     Question question = new Question(0, i, i + 1, nodes);
 
-                    if (question.ask("Escolha os elementos à serem trocados.")) {
+                    if (question.ask(Question.ELEMENT_CHANGE)) {
                         this.score.addRightAnswer();
                     } else {
                         this.score.addWrongAnswer();
