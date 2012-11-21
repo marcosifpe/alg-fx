@@ -31,11 +31,12 @@ public class Main extends Application {
     private Label scoreLabel;
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
+    private final int NODES_LENGHT = 4;
     public static boolean running = false;
     public static boolean canChoose = false;
     public static int chosenElements = 0;
     final Interpolator interpolator = Interpolator.LINEAR;
-    public static Stage stage1;
+    
 
     public static void main(String[] args) {
         launch(args);
@@ -49,7 +50,7 @@ public class Main extends Application {
     }
 
     public void initialize(Stage stage) {
-
+        
         stage.setTitle("AlgFX");
         root = new Group();
         score = new Score(this);
@@ -60,9 +61,14 @@ public class Main extends Application {
         menuBar.getMenus().add(menu);
 
         vertical.getChildren().add(menuBar);
-        nodes = new NodeElement[10];
+        nodes = new NodeElement[NODES_LENGHT];
 
-        for (int i = 1; i < 11; i++) {
+        
+        //=============== TESTES ==============
+//        for (int i = 1; i < 11; i++) {
+//            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
+//        }
+        for (int i = 1; i < NODES_LENGHT + 1; i++) {
             nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
         }
 
@@ -77,7 +83,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[9], nodes, MovingThread.SELECTION_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -91,7 +97,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[9], nodes, MovingThread.BUBBLE_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.BUBBLE_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -105,7 +111,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[9], nodes, MovingThread.INSERTION_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.INSERTION_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -118,7 +124,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[9], nodes, MovingThread.SHELL_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -131,7 +137,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[9], nodes, MovingThread.SHELL_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -165,7 +171,7 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent t) {
-                if (!running) {
+                if (!running && pointProgressBar != null) {
                     score.fillProgressBar(0.1);
 //                    pointProgressBar.setProgress(pointProgressBar.getProgress() + 0.1);
                 }
@@ -215,9 +221,9 @@ public class Main extends Application {
         }
 
         System.gc();
-        nodes = new NodeElement[10];
+        nodes = new NodeElement[NODES_LENGHT];
 
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < NODES_LENGHT + 1; i++) {
             nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
         }
 

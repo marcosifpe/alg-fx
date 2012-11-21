@@ -61,6 +61,7 @@ public class Score {
     }
 
     public double getPoints() {
+        points = (double) (((double) rightAnswers / (double) askedQuestions) * 100);
         return points;
     }
 
@@ -92,4 +93,15 @@ public class Score {
         this.wrongAnswers = wrongAnswers;
     }
     
+    public void addRightAnswer() {
+        this.rightAnswers++;
+    }
+    
+    public void addWrongAnswer() {
+        this.wrongAnswers++;
+    }
+    
+    public void addTotal() {
+        this.askedQuestions++;
+    }
 }

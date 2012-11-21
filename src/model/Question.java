@@ -58,8 +58,11 @@ public class Question {
         this.secondPosition = secondPosition;
     }
     
-    public void ask(String question) {
+    public boolean ask(String question) {
+        
         JOptionPane.showMessageDialog(null, question);
+        
+        boolean response = false;
         
         while (!isAnswered()) {
                         
@@ -69,14 +72,18 @@ public class Question {
                             if (this.nodes[this.firstPosition].getColor() == 1 && 
                                     this.nodes[this.secondPosition].getColor() == 1) {
                                 JOptionPane.showMessageDialog(null, "Correto!");
+                                response = true;
                             } else {
                                 JOptionPane.showMessageDialog(null, "Errado!");
+                                response = false;
                             }
                             
                             break;
                         }
                         
                     }
+        
+        return response;
         
     }
 

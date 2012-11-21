@@ -4,17 +4,16 @@
  */
 package threads;
 
+import execution.Main;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.scene.Group;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javax.swing.JOptionPane;
 import model.NodeElement;
-import execution.Main;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
 import model.Question;
 import model.Score;
 
@@ -24,7 +23,6 @@ import model.Score;
  */
 public class MovingThread extends Thread {
 
-    
     NodeElement nodes[];
     Group root;
     private Score score;
@@ -42,17 +40,17 @@ public class MovingThread extends Thread {
         this.nodes = nodes;
         this.operation = operation;
     }
-    
+
     public MovingThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation, Group root) {
         this.node1 = node1;
         this.node2 = node2;
         this.nodes = nodes;
         this.operation = operation;
         this.root = root;
-        
+
     }
-    
-    public MovingThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation, 
+
+    public MovingThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation,
             Group root, Score score) {
         this.node1 = node1;
         this.node2 = node2;
@@ -73,10 +71,21 @@ public class MovingThread extends Thread {
 
     public void execute() {
         try {
-            
-            if (this.operation == BUBBLE_SORT) {
 
+
+
+            if (this.operation == BUBBLE_SORT) {
+                
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.setPoints(0);
                 BubbleSort();
+                clearNodes(nodes);
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
             } else if (this.operation == SELECTION_SORT) {
                 SelectionSort();
             } else if (this.operation == INSERTION_SORT) {
@@ -162,49 +171,56 @@ public class MovingThread extends Thread {
             }
 
         }
-        
+
     }
-    
+
     public void clearNodes(NodeElement nodes[]) {
-        
+
         for (NodeElement nodeElement : nodes) {
             nodeElement.getCircle().setFill(Color.rgb(156, 216, 255));
             nodeElement.setColor(0);
         }
-        
+
     }
 
     public void BubbleSort() {
-        
+
         boolean swapped = true;
         int j = 0;
-        
+
         while (swapped) {
             swapped = false;
             j++;
             for (int i = 0; i < nodes.length - j; i++) {
                 if (nodes[i].getElementAsInt() > nodes[i + 1].getElementAsInt()) {
-                    
+
                     Main.canChoose = true;
                     Main.chosenElements = 0;
                     clearNodes(nodes);
-                    
+
                     Question question = new Question(0, i, i + 1, nodes);
-                    question.ask("Escolha os elementos à serem trocados.");
+
+                    if (question.ask("Escolha os elementos à serem trocados.")) {
+                        this.score.addRightAnswer();
+                    } else {
+                        this.score.addWrongAnswer();
+                    }
+                    this.score.addTotal();
+                    
                     Main.canChoose = false;
-                    
+
                     testMoving(nodes[i], nodes[i + 1], i, i + 1, 0);
-                    
+
                     nodes[i].setColor(0);
                     nodes[i + 1].setColor(0);
-                    
-                    
+
+
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
 //                    tmp = nodes[i].getElementAsInt();
 //                    nodes[i].setElementAsInt(nodes[i + 1].getElementAsInt());
 //                    nodes[i + 1].setElementAsInt(tmp);
@@ -214,78 +230,78 @@ public class MovingThread extends Thread {
         }
 
     }
-    
+
     public void ShellSort() {
-        
+
         int n = nodes.length;
         int h = n / 2;
         int j;
         NodeElement c;
-        
+
         while (h > 0) {
             for (int i = h; i < n; i++) {
-                
+
                 c = nodes[i];
                 j = i;
-                
+
                 while (j >= h && nodes[j - h].getElementAsInt() > c.getElementAsInt()) {
-                    
+
                     testMoving(nodes[j - h], nodes[j], j - h, j, 0);
-                    
+
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     j = j - h;
-                    
+
                 }
-                
+
                 nodes[j] = c;
- 
+
             }
-            
+
             h = h / 2;
-            
+
         }
     }
 
     public void InPlaceQuickSort(int beginning, int end) {
-        
+
         if (beginning >= end) {
             return;
         }
-        
+
         int pivot = nodes[end].getElementAsInt();
         int l = beginning;
         int r = end - 1;
-        
+
         while (l <= r) {
-            
-            
-            while(l <= r && nodes[l].getElementAsInt() <= pivot) {
+
+
+            while (l <= r && nodes[l].getElementAsInt() <= pivot) {
                 l++;
             }
-            
-            while(r >= l && nodes[r].getElementAsInt() >= pivot) {
+
+            while (r >= l && nodes[r].getElementAsInt() >= pivot) {
                 r--;
             }
-            
+
             if (l < r) {
                 testMoving(nodes[l], nodes[r], l, r, 0);
             }
-            
+
             testMoving(nodes[l], nodes[end], l, end, 0);
-            
+
             InPlaceQuickSort(beginning, l - 1);
             InPlaceQuickSort(l + 1, end);
-            
+
         }
-        
-        
+
+
     }
-    
+
     public void testMoving(NodeElement node1, NodeElement node2, int pos1, int pos2, int before) {
 
         double node1X, node1Y, node2X, node2Y, node1Xtemp, node2Xtemp;
@@ -293,15 +309,15 @@ public class MovingThread extends Thread {
 
         nodeChange1 = node1;
         nodeChange2 = node2;
-        
+
         node1Y = nodeChange1.getStackPane().getTranslateY();
         node1X = (pos1 * 80);
         node1Xtemp = node1X;
-        
+
         node2Y = nodeChange2.getStackPane().getTranslateY();
         node2X = (pos2 * 80);
         node2Xtemp = node2X;
-        
+
         int i = 0;
 
         while (i != 80) {
@@ -318,20 +334,20 @@ public class MovingThread extends Thread {
             i++;
 
         }
-        
+
         i = 0;
 
         while (i != (node2X - node1X)) {
 
             nodeChange1.getStackPane().setTranslateX(nodeChange1.getStackPane().getTranslateX() + 1.0);
             nodeChange2.getStackPane().setTranslateX(nodeChange2.getStackPane().getTranslateX() - 1.0);
-            
+
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             i++;
         }
 
@@ -351,7 +367,7 @@ public class MovingThread extends Thread {
             i++;
 
         }
-        
+
         nodes[pos1] = nodeChange2;
         nodes[pos2] = nodeChange1;
 
