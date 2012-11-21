@@ -47,7 +47,6 @@ public class Score {
         }
         
         main.getScoreLabel().setText(" " + main.getPointProgressBar().getProgress() + "%");
-//        main.getFlowProgressBar().setProgress(main.getFlowProgressBar().getProgress() + percentage);
         
     }
 

@@ -44,7 +44,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-//        udsijdsaidfj
         initialize(stage);
         stage.show();
     }
@@ -62,12 +61,7 @@ public class Main extends Application {
 
         vertical.getChildren().add(menuBar);
         nodes = new NodeElement[NODES_LENGHT];
-
         
-        //=============== TESTES ==============
-//        for (int i = 1; i < 11; i++) {
-//            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
-//        }
         for (int i = 1; i < NODES_LENGHT + 1; i++) {
             nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
         }
@@ -173,7 +167,6 @@ public class Main extends Application {
             public void handle(ActionEvent t) {
                 if (!running && pointProgressBar != null) {
                     score.fillProgressBar(0.1);
-//                    pointProgressBar.setProgress(pointProgressBar.getProgress() + 0.1);
                 }
             }
         });
@@ -206,7 +199,6 @@ public class Main extends Application {
 
         horizontalBox.getChildren().addAll(pointProgressBar, scoreLabel, flowProgressBar);
         root.getChildren().add(horizontalBox);
-//        addChildrenInRoot(horizontalBox);
 
     }
 

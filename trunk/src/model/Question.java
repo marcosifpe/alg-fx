@@ -18,6 +18,7 @@ public class Question {
     private int secondPosition;
     private NodeElement nodes[];
     private boolean answered = false;
+    public static final int ELEMENT_CHANGE = 1;
 
     public Question(int chosenElements, int firstPosition, int secondPosition, NodeElement[] nodes) {
         this.chosenElements = chosenElements;
@@ -58,13 +59,19 @@ public class Question {
         this.secondPosition = secondPosition;
     }
     
-    public boolean ask(String question) {
+    public boolean ask(int operation) {
+        
+        String  question = "";
+        
+        if (operation == ELEMENT_CHANGE) {
+            question = "Escolha os elementos à serem trocados.";
+        }
         
         JOptionPane.showMessageDialog(null, question);
         
         boolean response = false;
         
-        while (!isAnswered()) {
+        while (!hasAnswered()) {
                         
                         
                         if (Main.chosenElements == 2) {
@@ -78,7 +85,8 @@ public class Question {
                                 response = false;
                             }
                             
-                            break;
+                            answered = true;
+
                         }
                         
                     }
@@ -87,7 +95,7 @@ public class Question {
         
     }
 
-    public boolean isAnswered() {
+    public boolean hasAnswered() {
         return answered;
     }
 
