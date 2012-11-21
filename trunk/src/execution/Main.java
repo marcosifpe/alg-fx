@@ -49,7 +49,7 @@ public class Main extends Application {
 
     public void initialize(Stage stage) {
 
-        stage.setTitle("AlgFX");
+        stage.setTitle("AlgFXTest");
         root = new Group();
         score = new Score(this);
         VBox vertical = new VBox(20);
