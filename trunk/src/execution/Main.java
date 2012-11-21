@@ -20,7 +20,7 @@ import threads.MovingThread;
 
 /**
  *
- * @author rafael
+ * @author rafael1
  */
 public class Main extends Application {
 
