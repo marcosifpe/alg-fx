@@ -29,16 +29,15 @@ public class NodeElement {
     private EventHandler eventHandler;
     private int color;
     private double x, y;
-    private final Interpolator interpolator = Interpolator.LINEAR;
-    TranslateTransition translateTransition1, translateTransition2, translateTransition3;
     private double circleRadius;
+    private final Interpolator interpolator = Interpolator.LINEAR;
 
     public NodeElement() {
     }
 
     public NodeElement(double radius, String element, int operation, double x, double y) {
         EventHandler eventHandler1 = generateEventHandler(operation);
-        circleRadius = radius;
+        this.circleRadius = radius;
         this.stackPane = new StackPane();
         this.circle = new Circle(radius, Color.rgb(156, 216, 255));
         this.circle.setEffect(new InnerShadow());

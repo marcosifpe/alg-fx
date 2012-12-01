@@ -13,8 +13,8 @@ import execution.Main;
 public class BubbleSort extends Thread {
 
     Main main = new Main();
-    @Override
     
+    @Override
     public void run() {
         execute();
     }
