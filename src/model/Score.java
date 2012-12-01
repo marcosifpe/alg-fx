@@ -22,7 +22,6 @@ public class Score {
     public Score(Main main) {
         
         this.main = main;
-        
         this.askedQuestions = 0;
         this.rightAnswers = 0;
         this.wrongAnswers = 0;
