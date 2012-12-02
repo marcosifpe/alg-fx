@@ -198,7 +198,7 @@ public class MovingThread extends Thread {
                     clearNodes(nodes);
 
                     Question question = new Question(0, i, i + 1, nodes);
-
+                    
                     if (question.ask(Question.ELEMENT_CHANGE)) {
                         this.score.addRightAnswer();
                     } else {

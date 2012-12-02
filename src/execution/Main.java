@@ -4,15 +4,17 @@
  */
 package execution;
 
+import java.awt.Toolkit;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.NodeElement;
 import model.Score;
@@ -31,12 +33,13 @@ public class Main extends Application {
     private Label scoreLabel;
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
+    private TextArea tf, events;
     private final int NODES_LENGHT = 4;
+    private final int SPACING_X = 450;
     public static boolean running = false;
     public static boolean canChoose = false;
     public static int chosenElements = 0;
-    final Interpolator interpolator = Interpolator.LINEAR;
-    
+    private final Interpolator interpolator = Interpolator.LINEAR;
 
     public static void main(String[] args) {
         launch(args);
@@ -53,17 +56,30 @@ public class Main extends Application {
         stage.setTitle("AlgFX");
         root = new Group();
         score = new Score(this);
+
+        tf = new TextArea("Teste" + "\nTeste2" + "\nasdf sss");
+        tf.setEditable(false);
+        tf.getStyleClass().add("text-f");
+        tf.setId("text-f");
+        tf.setPrefWidth(400);
+        tf.setPrefHeight(400);
+        tf.setTranslateX(1);
+        tf.setTranslateY(30);
+        tf.setFocusTraversable(false);
+
         VBox vertical = new VBox(20);
-        MenuBar menuBar = new MenuBar();
+        final MenuBar menuBar = new MenuBar();
+        menuBar.setPrefWidth(4000);
+
         MenuItem aboutItem = new MenuItem("Sobre");
         Menu menu = MenuBuilder.create().text("Ajuda").items(aboutItem).build();
         menuBar.getMenus().add(menu);
+        vertical.getChildren().addAll(menuBar);
 
-        vertical.getChildren().add(menuBar);
         nodes = new NodeElement[NODES_LENGHT];
-        
+
         for (int i = 1; i < NODES_LENGHT + 1; i++) {
-            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
+            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, 120);
         }
 
         animation = new Group();
@@ -71,7 +87,7 @@ public class Main extends Application {
             animation.getChildren().add(ne.getStackPane());
         }
 
-        Button button1 = new Button("Do Selection");
+        Button button1 = new Button("Selection Sort");
         button1.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -85,7 +101,7 @@ public class Main extends Application {
         });
 
 
-        Button button = new Button("Do BubbleSort");
+        Button button = new Button("Bubble Sort");
         button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -99,7 +115,7 @@ public class Main extends Application {
             }
         });
 
-        Button button2 = new Button("Do Insertion");
+        Button button2 = new Button("Insertion Sort");
         button2.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -112,7 +128,7 @@ public class Main extends Application {
             }
         });
 
-        Button button3 = new Button("Do Shell");
+        Button button3 = new Button("Shell Sort");
         button3.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -125,7 +141,7 @@ public class Main extends Application {
             }
         });
 
-        Button button4 = new Button("Do InPlace");
+        Button button4 = new Button("In-Place QuickSort");
         button4.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -170,17 +186,74 @@ public class Main extends Application {
                 }
             }
         });
+        Button button8 = new Button("SelectText");
+        button8.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                tf.requestFocus();
+                String s = tf.getText();
+                int i = s.indexOf("as");
+                tf.positionCaret(i);
+                tf.selectEnd();
+                System.out.println(tf.getSelectedText());
+
+            }
+        });
 
         horizontalBox = new HBox();
-        horizontalBox.setTranslateY(30);
+        horizontalBox.setTranslateY(29);
 
-        HBox buttonPlacing = new HBox();
-        buttonPlacing.getChildren().addAll(button, button1, button2, button3, button4,
-                button5, button6, button7);
+        button.setPrefWidth(200);
+        button1.setPrefWidth(200);
+        button2.setPrefWidth(200);
+        button3.setPrefWidth(200);
+        button4.setPrefWidth(200);
+        button5.setPrefWidth(135);
+        button6.setPrefWidth(135);
+        button7.setPrefWidth(135);
+        button8.setPrefWidth(135);
 
-        root.getChildren().addAll(buttonPlacing, horizontalBox, animation);
-        stage.setScene(new Scene(root, 800, 600));
+        FlowPane flowpane = new FlowPane();
+        flowpane.maxWidth(450);
+        flowpane.setPrefHeight(1000);
+        flowpane.setId("flow");
+        flowpane.setTranslateY(431);
+        
+        
+        TilePane tilePane = new TilePane();
+        tilePane.maxWidth(450);
+        tilePane.setPrefColumns(2);
+        tilePane.setPrefRows(4);
+        
+        Label sorting = new Label(" Algoritmos de Ordenação: ");
+        sorting.setId("sort");
+        sorting.setPrefWidth(401);
+        sorting.setPrefHeight(30);
+        Label datastructures = new Label(" Estruturas de Dados: ");
+        datastructures.setId("sort");
+        datastructures.setPrefWidth(401);
+        datastructures.setPrefHeight(30);
+        
+        tilePane.getChildren().addAll(button, 
+                button1, button2, button3, button4);
+        flowpane.getChildren().addAll(sorting, tilePane, datastructures);
+        
+        
+        events = new TextArea(" Eventos: ");
+        events.setId("event");
+        events.setTranslateX(402);
+        events.setTranslateY(550);
+        events.setPrefWidth(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 395);
+        
+        root.getChildren().addAll(vertical, tf, horizontalBox, animation, flowpane, events);
+        root.setId("pane");
 
+//        Scene scene = new Scene(root, 800, 600, Color.DARKSLATEGRAY);
+        Scene scene = new Scene(root, 800, 600, Color.WHITE);
+        scene.getStylesheets().add("style.css");
+        stage.setScene(scene);
 
     }
 
@@ -216,7 +289,7 @@ public class Main extends Application {
         nodes = new NodeElement[NODES_LENGHT];
 
         for (int i = 1; i < NODES_LENGHT + 1; i++) {
-            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, i * 80, 120);
+            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, 120);
         }
 
         for (NodeElement ne : nodes) {
@@ -263,5 +336,4 @@ public class Main extends Application {
     public void setScoreLabel(Label scoreLabel) {
         this.scoreLabel = scoreLabel;
     }
-    
 }

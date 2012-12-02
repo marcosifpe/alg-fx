@@ -6,13 +6,13 @@ package model;
 
 import execution.Main;
 import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javax.swing.JOptionPane;
@@ -21,30 +21,32 @@ import javax.swing.JOptionPane;
  *
  * @author rafael
  */
-public class NodeElement {
-
+public class SquareElement {
+    
     private StackPane stackPane;
-    private Circle circle;
+    private Rectangle rectangle;
+    private double width;
+    private double height;
     private String element;
     private EventHandler eventHandler;
     private int color;
     private double x, y;
-    private double circleRadius;
 
-    public NodeElement() {
-    }
+    public SquareElement() {}
 
-    public NodeElement(double radius, String element, int operation, double x, double y) {
+    public SquareElement(double width, double height, String element, int operation, double x, double y) {
+        
         EventHandler eventHandler1 = generateEventHandler(operation);
-        this.circleRadius = radius;
+        this.width = width;
+        this.height = height;
         this.stackPane = new StackPane();
-        this.circle = new Circle(radius, Color.rgb(156, 216, 255));
-        this.circle.setEffect(new InnerShadow());
+        this.rectangle = new Rectangle(width, height, Color.rgb(156, 216, 255));
+        this.rectangle.setEffect(new InnerShadow());
         this.color = 0;
         this.element = element;
         Text text = new Text(element);
         text.setFont(new Font(14.0));
-        this.stackPane.getChildren().addAll(circle, text);
+        this.stackPane.getChildren().addAll(rectangle, text);
         this.x = x;
         this.y = y;
         stackPane.setLayoutX(x);
@@ -76,11 +78,11 @@ public class NodeElement {
                         if (Main.canChoose) {
                             
                             if (color == 0) {
-                                circle.setFill(Color.rgb(120, 201, 178));
+                                rectangle.setFill(Color.rgb(120, 201, 178));
                                 color = 1;
                                 Main.chosenElements++;
                             } else {
-                                circle.setFill(Color.rgb(156, 216, 255));
+                                rectangle.setFill(Color.rgb(156, 216, 255));
                                 color = 0;
                                 Main.chosenElements--;
                             }
@@ -109,14 +111,6 @@ public class NodeElement {
 
     public void setStackPane(StackPane stackPane) {
         this.stackPane = stackPane;
-    }
-
-    public Circle getCircle() {
-        return circle;
-    }
-
-    public void setCircle(Circle circle) {
-        this.circle = circle;
     }
 
     public String getElement() {
@@ -159,11 +153,28 @@ public class NodeElement {
         this.y = y;
     }
 
-    public double getCircleRadius() {
-        return circleRadius;
+    public double getHeight() {
+        return height;
     }
 
-    public void setCircleRadius(double circleRadius) {
-        this.circleRadius = circleRadius;
+    public void setHeight(double height) {
+        this.height = height;
     }
+
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+    
 }

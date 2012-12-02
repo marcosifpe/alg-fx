@@ -67,7 +67,7 @@ public class Question {
             question = "Escolha os elementos à serem trocados.";
         }
         
-        JOptionPane.showMessageDialog(null, question);
+//        JOptionPane.showMessageDialog(null, question);
         
         boolean response = false;
         
