@@ -1,0 +1,36 @@
+#text-f {
+    -fx-stroke: blue;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+/*    -fx-border-radius: 16px;*/
+/*    -fx-background-color: linear-gradient(#61a2b1, #2A5058);*/
+    -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
+/*    -fx-font-weight: bold;*/
+/*    -fx-text-fill: white;*/
+}
+
+#event {
+    -fx-stroke: blue;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+    -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
+    -fx-font-weight: bold;
+}
+
+#sort {
+    -fx-background-color: linear-gradient(#b4ddb4, #002400);
+      -fx-font-weight: bold;
+      -fx-text-fill: white;
+      -fx-font-size: 12pt;
+}
+
+#flow {
+    -fx-background-color: linear-gradient(#a7cfdf, #23538a);
+}
+
+.root{
+    -fx-font-size: 14pt;
+    -fx-base: #DFB951;
+    -fx-background: #A78732;
+    -fx-focus-color: #B6A678;
+}
