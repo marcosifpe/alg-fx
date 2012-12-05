@@ -2,26 +2,37 @@
     -fx-stroke: blue;
     -fx-border-color: black;
     -fx-border-width: 3px;
-/*    -fx-border-radius: 16px;*/
-/*    -fx-background-color: linear-gradient(#61a2b1, #2A5058);*/
+    /*    -fx-border-radius: 16px;*/
+    /*    -fx-background-color: linear-gradient(#61a2b1, #2A5058);*/
     -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
-/*    -fx-font-weight: bold;*/
-/*    -fx-text-fill: white;*/
+    /*    -fx-font-weight: bold;*/
+    /*    -fx-text-fill: white;*/
 }
 
 #event {
     -fx-stroke: blue;
     -fx-border-color: black;
     -fx-border-width: 3px;
+    -fx-border-radius: 12px;
     -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
     -fx-font-weight: bold;
+    /*    -fx-text-fill: white;*/
+    -fx-font-size: 14pt;
 }
 
 #sort {
     -fx-background-color: linear-gradient(#b4ddb4, #002400);
-      -fx-font-weight: bold;
-      -fx-text-fill: white;
-      -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 12pt;
+}
+
+#points {
+    -fx-background-color: linear-gradient(#b4ddb4, #002400);
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-size: 14pt;
+    -fx-border-radius: 16px;
 }
 
 #flow {

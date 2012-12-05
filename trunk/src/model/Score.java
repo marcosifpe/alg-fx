@@ -5,6 +5,7 @@
 package model;
 
 import execution.Main;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -33,6 +34,21 @@ public class Score {
         this.main.createProgressBar();
     }
     
+    public void fillSetProgressBar(double percentage) {
+        
+        System.out.println("Percent: " + percentage / 100.0);
+        
+        main.getPointProgressBar().setProgress(percentage / 100.0);
+        
+        System.out.println("Progress: " + main.getPointProgressBar().getProgress());
+        System.out.println("Points: " + getPoints());
+        
+//        DecimalFormat df = new DecimalFormat("#.#");
+//        main.getScoreLabel().setText("  aa" + df.format(getPoints()) + "%");
+//        main.getScoreLabel().setText("  aa%");
+        
+    }
+    
     public void fillProgressBar(double percentage) {
         
         if (main.getPointProgressBar().getProgress() + percentage >= 1.0) {
@@ -41,11 +57,12 @@ public class Score {
             
         } else {
             
-            main.getPointProgressBar().setProgress(main.getPointProgressBar().getProgress() + percentage);
+            main.getPointProgressBar().setProgress((main.getPointProgressBar().getProgress() + percentage));
         
         }
         
-        main.getScoreLabel().setText(" " + main.getPointProgressBar().getProgress() + "%");
+        DecimalFormat df = new DecimalFormat("#.#");
+        main.getScoreLabel().setText("  " + df.format(main.getPointProgressBar().getProgress() * 100.0) + "%");
         
     }
 

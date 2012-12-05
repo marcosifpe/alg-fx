@@ -4,15 +4,15 @@
  */
 package model;
 
+import execution.Constants;
 import execution.Main;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author rafael
  */
 public class Question {
-    
+
     private int chosenElements;
     private int firstPosition;
     private int secondPosition;
@@ -26,7 +26,7 @@ public class Question {
         this.secondPosition = secondPosition;
         this.nodes = nodes;
     }
-    
+
     public int getChosenElements() {
         return chosenElements;
     }
@@ -58,41 +58,44 @@ public class Question {
     public void setSecondPosition(int secondPosition) {
         this.secondPosition = secondPosition;
     }
-    
+
     public boolean ask(int operation) {
-        
-        String  question = "";
-        
+
         if (operation == ELEMENT_CHANGE) {
-            question = "Escolha os elementos à serem trocados.";
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.ELEMENT_CHANGE);
         }
-        
-//        JOptionPane.showMessageDialog(null, question);
-        
+
         boolean response = false;
         
         while (!hasAnswered()) {
-                        
-                        
-                        if (Main.chosenElements == 2) {
-                            
-                            if (this.nodes[this.firstPosition].getColor() == 1 && 
-                                    this.nodes[this.secondPosition].getColor() == 1) {
-                                JOptionPane.showMessageDialog(null, "Correto!");
-                                response = true;
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Errado!");
-                                response = false;
-                            }
-                            
-                            answered = true;
 
-                        }
-                        
-                    }
-        
+            if (Main.chosenElements == 2) {
+
+                if (this.nodes[this.firstPosition].getColor() == 1
+                        && this.nodes[this.secondPosition].getColor() == 1) {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "CORRETO!");
+                    response = true;
+
+                } else {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "ERRADO! Tente novamente.");
+                    response = false;
+                }
+
+                answered = true;
+
+            }
+
+
+
+        }
+
         return response;
-        
+
     }
 
     public boolean hasAnswered() {
@@ -102,5 +105,4 @@ public class Question {
     public void setAnswered(boolean answered) {
         this.answered = answered;
     }
-    
 }
