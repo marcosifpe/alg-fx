@@ -5,11 +5,12 @@
 package model;
 
 import execution.Main;
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -30,6 +31,9 @@ public class NodeElement {
     private int color;
     private double x, y;
     private double circleRadius;
+    private Image arrow;
+    private ImageView imageView;
+    private Label arrowLabel;
 
     public NodeElement() {
     }
@@ -74,17 +78,21 @@ public class NodeElement {
                     public void handle(Event t) {
 
                         if (Main.canChoose) {
-                            
+
                             if (color == 0) {
+
                                 circle.setFill(Color.rgb(120, 201, 178));
                                 color = 1;
                                 Main.chosenElements++;
+
                             } else {
+
                                 circle.setFill(Color.rgb(156, 216, 255));
                                 color = 0;
                                 Main.chosenElements--;
+
                             }
-                            
+
                         }
                     }
                 };
@@ -165,5 +173,31 @@ public class NodeElement {
 
     public void setCircleRadius(double circleRadius) {
         this.circleRadius = circleRadius;
+    }
+
+    public Image getArrow() {
+        return arrow;
+    }
+
+    public void setArrow(Image arrow) {
+        this.arrow = arrow;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
+    public void createArrow() {
+        arrow = new Image("arrow-down.gif");
+        imageView = new ImageView(arrow);
+
+        arrowLabel = new Label("", imageView);
+        arrowLabel.setTranslateX(circle.getTranslateX());
+        arrowLabel.setTranslateY(circle.getTranslateY() - 80);
+        stackPane.getChildren().add(arrowLabel);
     }
 }

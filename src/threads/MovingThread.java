@@ -4,14 +4,16 @@
  */
 package threads;
 
+import execution.Constants;
 import execution.Main;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.scene.Group;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javax.swing.JOptionPane;
 import model.NodeElement;
 import model.Question;
@@ -81,9 +83,16 @@ public class MovingThread extends Thread {
                 this.score.setPoints(0);
                 BubbleSort();
                 clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                            + Constants.SIMULATION_FINISHED);
+                
+                
                 DecimalFormat df = new DecimalFormat("#.#");
                 String points = df.format(this.score.getPoints()) + "%";
                 JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+                
+                Main.events.setText(Constants.EVENT + "\n\n"
+                            + Constants.NO_SIMULATION);
 
             } else if (this.operation == SELECTION_SORT) {
                 SelectionSort();
@@ -92,7 +101,7 @@ public class MovingThread extends Thread {
             } else if (this.operation == SHELL_SORT) {
                 ShellSort();
             } else if (this.operation == IN_PLACE_QUICK_SORT) {
-                InPlaceQuickSort(0, nodes.length);
+                InPlaceQuickSort(0, nodes.length - 1);
             }
 
         } finally {
@@ -181,6 +190,15 @@ public class MovingThread extends Thread {
         }
 
     }
+    
+    public static void clearNodeColor(NodeElement nodes[]) {
+
+        for (NodeElement nodeElement : nodes) {
+            nodeElement.getCircle().setFill(Color.rgb(156, 216, 255));
+            nodeElement.setColor(0);
+        }
+
+    }
 
     public void BubbleSort() {
 
@@ -196,7 +214,7 @@ public class MovingThread extends Thread {
                     Main.canChoose = true;
                     Main.chosenElements = 0;
                     clearNodes(nodes);
-
+                    
                     Question question = new Question(0, i, i + 1, nodes);
                     
                     if (question.ask(Question.ELEMENT_CHANGE)) {
@@ -205,6 +223,7 @@ public class MovingThread extends Thread {
                         this.score.addWrongAnswer();
                     }
                     this.score.addTotal();
+                    this.score.fillSetProgressBar(this.score.getPoints());
                     
                     Main.canChoose = false;
 

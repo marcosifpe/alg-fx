@@ -9,11 +9,13 @@ import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.NodeElement;
@@ -33,13 +35,19 @@ public class Main extends Application {
     private Label scoreLabel;
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
-    private TextArea tf, events;
+    private TextArea tf;
+    private FlowPane fp;
     private final int NODES_LENGHT = 4;
     private final int SPACING_X = 450;
+    private final int Y_POSITION = 150;
     public static boolean running = false;
     public static boolean canChoose = false;
+    public static TextArea events;
+    public static TextArea variables;
+    public static FlowPane scoring;
     public static int chosenElements = 0;
     private final Interpolator interpolator = Interpolator.LINEAR;
+    public boolean theSwitch = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -53,12 +61,14 @@ public class Main extends Application {
 
     public void initialize(Stage stage) {
         
+        fp = new FlowPane();
         stage.setTitle("AlgFX");
         root = new Group();
         score = new Score(this);
 
-        tf = new TextArea("Teste" + "\nTeste2" + "\nasdf sss");
+        tf = new TextArea(Constants.BUBBLE_SORT);
         tf.setEditable(false);
+        tf.setFocusTraversable(false);
         tf.getStyleClass().add("text-f");
         tf.setId("text-f");
         tf.setPrefWidth(400);
@@ -69,7 +79,7 @@ public class Main extends Application {
 
         VBox vertical = new VBox(20);
         final MenuBar menuBar = new MenuBar();
-        menuBar.setPrefWidth(4000);
+        menuBar.setPrefWidth(3000);
 
         MenuItem aboutItem = new MenuItem("Sobre");
         Menu menu = MenuBuilder.create().text("Ajuda").items(aboutItem).build();
@@ -79,28 +89,14 @@ public class Main extends Application {
         nodes = new NodeElement[NODES_LENGHT];
 
         for (int i = 1; i < NODES_LENGHT + 1; i++) {
-            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, 120);
+            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, Y_POSITION);
         }
 
         animation = new Group();
         for (NodeElement ne : nodes) {
             animation.getChildren().add(ne.getStackPane());
         }
-
-        Button button1 = new Button("Selection Sort");
-        button1.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent t) {
-                if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score);
-                    running = true;
-                    mt.start();
-                }
-            }
-        });
-
-
+        
         Button button = new Button("Bubble Sort");
         button.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -112,6 +108,19 @@ public class Main extends Application {
                     mt.start();
                 }
 
+            }
+        });
+
+        Button button1 = new Button("Selection Sort");
+        button1.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                if (!running) {
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score);
+                    running = true;
+                    mt.start();
+                }
             }
         });
 
@@ -147,7 +156,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score);
+                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.IN_PLACE_QUICK_SORT, root, score);
                     running = true;
                     mt.start();
                 }
@@ -201,6 +210,38 @@ public class Main extends Application {
 
             }
         });
+        
+        Button toTest = new Button("TESTING");
+        toTest.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                
+                if (!theSwitch) {
+                fp = new FlowPane();
+                fp.setId("text-f");
+                fp.setPrefWidth(200);
+                fp.setPrefHeight(200);
+                Label lb = new Label("Teste:");
+                lb.setPrefWidth(200);
+                fp.getChildren().add(lb);
+                
+                Button b1 = new Button("Sim");
+                b1.setPrefWidth(100);
+                Button b2 = new Button("Não");
+                b2.setPrefWidth(100);
+                fp.getChildren().add(b1);
+                fp.getChildren().add(b2);
+                
+                root.getChildren().add(fp);
+                theSwitch = true;
+                
+                } else {
+                    root.getChildren().remove(fp);
+                    theSwitch = false;
+                }
+            }
+        });
 
         horizontalBox = new HBox();
         horizontalBox.setTranslateY(29);
@@ -210,10 +251,11 @@ public class Main extends Application {
         button2.setPrefWidth(200);
         button3.setPrefWidth(200);
         button4.setPrefWidth(200);
-        button5.setPrefWidth(135);
-        button6.setPrefWidth(135);
-        button7.setPrefWidth(135);
-        button8.setPrefWidth(135);
+        button5.setPrefWidth(200);
+        button6.setPrefWidth(200);
+        button7.setPrefWidth(200);
+        button8.setPrefWidth(200);
+        toTest.setPrefWidth(200);
 
         FlowPane flowpane = new FlowPane();
         flowpane.maxWidth(450);
@@ -225,53 +267,95 @@ public class Main extends Application {
         TilePane tilePane = new TilePane();
         tilePane.maxWidth(450);
         tilePane.setPrefColumns(2);
-        tilePane.setPrefRows(4);
+        tilePane.setPrefRows(3);
         
         Label sorting = new Label(" Algoritmos de Ordenação: ");
         sorting.setId("sort");
         sorting.setPrefWidth(401);
         sorting.setPrefHeight(30);
+        
         Label datastructures = new Label(" Estruturas de Dados: ");
         datastructures.setId("sort");
         datastructures.setPrefWidth(401);
         datastructures.setPrefHeight(30);
         
+        TilePane tilePane1 = new TilePane();
+        tilePane1.maxWidth(450);
+        tilePane1.setPrefColumns(2);
+        tilePane1.setPrefRows(3);
+        
         tilePane.getChildren().addAll(button, 
-                button1, button2, button3, button4);
-        flowpane.getChildren().addAll(sorting, tilePane, datastructures);
+                button1, button2, button3, button4, toTest);
+        
+        tilePane1.getChildren().addAll(button5, button6, button7, button8);
+        flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
         
         
-        events = new TextArea(" Eventos: ");
+        events = new TextArea(" Eventos: " + "\n\n" + Constants.NO_SIMULATION);
+        events.setEditable(false);
         events.setId("event");
-        events.setTranslateX(402);
-        events.setTranslateY(550);
-        events.setPrefWidth(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 395);
+        events.setTranslateX(404);
+        events.setTranslateY(601);
+        events.setPrefWidth(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 406);
+        events.setPrefHeight(Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 655);
         
-        root.getChildren().addAll(vertical, tf, horizontalBox, animation, flowpane, events);
-        root.setId("pane");
-
-//        Scene scene = new Scene(root, 800, 600, Color.DARKSLATEGRAY);
-        Scene scene = new Scene(root, 800, 600, Color.WHITE);
+        variables = new TextArea(" Variáveis: " + "\n\n" + Constants.NO_VARIABLES);
+        variables.setEditable(false);
+        variables.setId("event");
+        variables.setTranslateX(404);
+        variables.setTranslateY(500);
+        variables.setPrefWidth(Toolkit.getDefaultToolkit().getScreenSize().getWidth() - 800);
+        variables.setPrefHeight(Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 669);
+        
+        scoring = new FlowPane();
+        
+        Label sc = new Label(" Pontuação:");
+        sc.setId("points");
+        sc.setPrefWidth(382);
+        
+        
+        scoring.setMaxWidth(382);
+        scoring.setId("event");
+        scoring.setTranslateX(973);
+        scoring.setTranslateY(500);
+        scoring.setPrefHeight(Toolkit.getDefaultToolkit().getScreenSize().getHeight() - 669);
+        scoring.getChildren().add(sc);
+        
+        root.getChildren().addAll(vertical, tf, horizontalBox, animation, 
+                flowpane, events, variables, scoring);
+        
+        createProgressBar();
+        Scene scene = new Scene(root, 800, 600, Color.DARKSLATEGRAY);
+//        Scene scene = new Scene(root, 800, 600, Color.WHITE);
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
 
     }
 
+    public Group getRoot() {
+        return root;
+    }
+
+    public void setRoot(Group root) {
+        this.root = root;
+    }
+    
     public void createProgressBar() {
 
-        root.getChildren().remove(horizontalBox);
+        scoring.getChildren().remove(horizontalBox);
 
         horizontalBox = new HBox();
         horizontalBox.setTranslateY(30);
         pointProgressBar = new ProgressBar(0.0);
+        pointProgressBar.setPrefWidth(300);
         pointProgressBar.setProgress(0.0);
         scoreLabel = new Label(" " + pointProgressBar.getProgress() + "%");
 
         flowProgressBar = new ProgressIndicator(0.0);
         flowProgressBar.setProgress(0.0);
-
-        horizontalBox.getChildren().addAll(pointProgressBar, scoreLabel, flowProgressBar);
-        root.getChildren().add(horizontalBox);
+        
+        horizontalBox.getChildren().addAll(new Label("       "), pointProgressBar);
+        scoring.getChildren().add(horizontalBox);
 
     }
 
@@ -289,7 +373,7 @@ public class Main extends Application {
         nodes = new NodeElement[NODES_LENGHT];
 
         for (int i = 1; i < NODES_LENGHT + 1; i++) {
-            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, 120);
+            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, Y_POSITION);
         }
 
         for (NodeElement ne : nodes) {
