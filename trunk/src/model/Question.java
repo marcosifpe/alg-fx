@@ -67,7 +67,7 @@ public class Question {
         }
 
         boolean response = false;
-        
+
         while (!hasAnswered()) {
 
             if (Main.chosenElements == 2) {
