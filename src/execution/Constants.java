@@ -4,13 +4,19 @@
  */
 package execution;
 
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 /**
  *
  * @author rafael
  */
 public class Constants {
-    
+
     public static String EVENT = " Eventos: ";
+    public static String VARIABLES = " Variáveis: " + "\n\n";
+    public static String NO_CODE = " Pseudocódigo ainda não selecionado.";
     public static String ELEMENT_CHANGE = " Escolha os elementos à serem trocados.";
     public static String NO_SIMULATION = " Nenhuma simulação selecionada. \n"
             + " Escolha dentre as opções dadas no menu à esquerda.";
@@ -18,14 +24,16 @@ public class Constants {
             + " Inicie uma simulação para visualizar as variáveis de execução.";
     public static String SIMULATION_FINISHED = "Simulação concluída com sucesso.";
     public static String BUBBLE_SORT = "       BUBBLE SORT     \n\n\n\n"
-            + "para ( i = tamanho_vetor; i >= 1; i-- ) { \n\n"
-            + "   para ( j = 1; j < i; j++ ) {\n\n"
-            + "      se ( v[ j - 1 ].valor( ) > v [ j ].valor( ) ) {\n"
-            + "      auxiliar = v[ j ];\n"
-            + "      v[ j ] = v[ j - 1 ];\n"
-            + "      v[ j - 1 ] = auxiliar;\n\n"
-            + "      }\n\n"
-            + "   }\n\n"
+            + "troca = true;\n"
+            + "j = 0;\n\n"
+            + "enquanto(troca == true) {\n"
+            + "  troca = false;\n"
+            + "  j += 1;\n"
+            + "    para(i = 0; i < tamanho_vetor; i++) {\n"
+            + "      se(vetor[ i ] > vetor [ i + 1 ] {\n"
+            + "        troca(vetor[ i ], vetor[ i + 1]);\n"
+            + "      }\n"
+            + "    }\n"
             + "}";
     public static String INSERTION_SORT = "       INSERTION SORT     \n\n\n"
             + "para(i = 1; i < tamanho_vetor; i++){\n\n"
@@ -106,5 +114,31 @@ public class Constants {
             + "        };\n\n"
             + "      v [ j ] = x;\n\n"
             + "} enquanto ( h != 1);";
-    
+    public static String GUESS_RIGHT = "acerto.wav";
+    public static String GUESS_WRONG = "falha.wav";
+    public static boolean PLAY_SOUNDS = true;
+
+    public static void playQuestionSound(int op) {
+        
+        if (PLAY_SOUNDS) {
+        
+        String source = "";
+
+        switch (op) {
+            case 0:
+                source = new File(GUESS_RIGHT).toURI().toString();
+                break;
+            case 1:
+                source = new File(GUESS_WRONG).toURI().toString();
+                break;
+        }
+
+        Media media = null;
+        media = new Media(source);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
+        
+        }
+        
+    }
 }

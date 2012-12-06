@@ -27,6 +27,8 @@ public class MovingThread extends Thread {
 
     NodeElement nodes[];
     Group root;
+    private Group animation;
+    private Main instance;
     private Score score;
     private NodeElement node1;
     private NodeElement node2;
@@ -34,6 +36,9 @@ public class MovingThread extends Thread {
     private int operation;
     public final static int BUBBLE_SORT = 1, SELECTION_SORT = 2, INSERTION_SORT = 3, SHELL_SORT = 4,
             IN_PLACE_QUICK_SORT = 5;
+    private final int SPACING_X = 450;
+    private final int NODES_LENGHT = 5;
+    private final int Y_POSITION = 150;
 
     public MovingThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation) {
         this.node1 = node1;
@@ -52,13 +57,20 @@ public class MovingThread extends Thread {
     }
 
     public MovingThread(NodeElement node1, NodeElement node2, NodeElement[] nodes, int operation,
-            Group root, Score score) {
+            Group root, Score score, Group animation) {
         this.node1 = node1;
         this.node2 = node2;
         this.nodes = nodes;
         this.operation = operation;
         this.root = root;
         this.score = score;
+    }
+    
+    public MovingThread(int operation, Group root, Score score, NodeElement[] nodes) {
+        this.operation = operation;
+        this.root = root;
+        this.score = score;
+        this.nodes = nodes;
     }
 
     public MovingThread(NodeElement[] nodes) {
@@ -71,15 +83,17 @@ public class MovingThread extends Thread {
     }
 
     public void execute() {
+        
         try {
-
-
-
+            
             if (this.operation == BUBBLE_SORT) {
                 
+//                this.score.createElements();
+                Main.tf.setText(Constants.BUBBLE_SORT);
                 this.score.setAskedQuestions(0);
                 this.score.setRightAnswers(0);
                 this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
                 this.score.setPoints(0);
                 BubbleSort();
                 clearNodes(nodes);
@@ -91,6 +105,9 @@ public class MovingThread extends Thread {
                 String points = df.format(this.score.getPoints()) + "%";
                 JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
                 
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
                 Main.events.setText(Constants.EVENT + "\n\n"
                             + Constants.NO_SIMULATION);
 
@@ -105,7 +122,9 @@ public class MovingThread extends Thread {
             }
 
         } finally {
+//            Main.removeElements();
             Main.running = false;
+            return;
         }
 
     }
@@ -201,15 +220,38 @@ public class MovingThread extends Thread {
     }
 
     public void BubbleSort() {
-
+        
+        Main.variables.setText(Constants.VARIABLES + "troca = null    " +
+                "j = 0    i = 0");
+        this.score.selectText("troca = true;\n");
         boolean swapped = true;
+        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = 0    i = 0");
+        this.score.selectText("j = 0;\n\n");
         int j = 0;
-
+        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = " + j + "    i = 0");
+        
+        this.score.selectText("enquanto(troca == true) {\n");
         while (swapped) {
+            this.score.selectText("  troca = false;\n");
             swapped = false;
+            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = " + j + "    i = 0");
+            this.score.selectText("  j += 1;\n");
             j++;
+            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = " + j + "    i = 0");
+            
             for (int i = 0; i < nodes.length - j; i++) {
+                Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = " + j + "    i = " + i);
+                this.score.selectText("    para(i = 0; i < tamanho_vetor; i++) {\n");
+                
+                this.score.selectText("      se(vetor[ i ] > vetor [ i + 1 ] {\n");
                 if (nodes[i].getElementAsInt() > nodes[i + 1].getElementAsInt()) {
+                Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
+                "j = " + j + "    i = " + i);    
 
                     Main.canChoose = true;
                     Main.chosenElements = 0;
@@ -218,15 +260,18 @@ public class MovingThread extends Thread {
                     Question question = new Question(0, i, i + 1, nodes);
                     
                     if (question.ask(Question.ELEMENT_CHANGE)) {
+                        Constants.playQuestionSound(0);
                         this.score.addRightAnswer();
                     } else {
+                        Constants.playQuestionSound(1);
                         this.score.addWrongAnswer();
                     }
                     this.score.addTotal();
                     this.score.fillSetProgressBar(this.score.getPoints());
                     
                     Main.canChoose = false;
-
+                    
+                    this.score.selectText("        troca(vetor[ i ], vetor[ i + 1]);\n");
                     testMoving(nodes[i], nodes[i + 1], i, i + 1, 0);
 
                     nodes[i].setColor(0);
@@ -388,6 +433,7 @@ public class MovingThread extends Thread {
 
         nodes[pos1] = nodeChange2;
         nodes[pos2] = nodeChange1;
+        clearNodes(nodes);
 
     }
 }
