@@ -30,6 +30,18 @@ public class Score {
         this.progress = 0.0;
     }
     
+    public void selectText(String code) {
+        this.main.selectText(code);
+    }
+    
+    public void createElements() {
+        this.main.createElements();
+    }
+    
+    public void removeElements() {
+        this.main.removeElements();
+    }
+    
     public void createMainProgressBar() {
         this.main.createProgressBar();
     }
