@@ -4,9 +4,6 @@
  */
 package execution;
 
-import java.io.File;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import java.awt.Toolkit;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
@@ -176,7 +173,9 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score, animation);
+//                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score, animation);
+                    createElements();
+                    MovingThread mt = new MovingThread(MovingThread.SELECTION_SORT, root, score, nodes);
                     running = true;
                     mt.start();
                 }
@@ -189,9 +188,12 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.INSERTION_SORT, root, score, animation);
+                    
+                    createElements();
+                    MovingThread mt = new MovingThread(MovingThread.INSERTION_SORT, root, score, nodes);
                     running = true;
                     mt.start();
+                    
                 }
             }
         });
@@ -202,7 +204,9 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score, animation);
+                    createElements();
+                    MovingThread mt = new MovingThread(MovingThread.SHELL_SORT, root, score, nodes);
+//                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score, animation);
                     running = true;
                     mt.start();
                 }
@@ -215,7 +219,8 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.IN_PLACE_QUICK_SORT, root, score, animation);
+                    createElements();
+                    MovingThread mt = new MovingThread(MovingThread.IN_PLACE_QUICK_SORT, root, score, nodes);
                     running = true;
                     mt.start();
                 }

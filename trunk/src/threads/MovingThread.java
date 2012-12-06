@@ -11,9 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
-import javafx.stage.Popup;
 import javax.swing.JOptionPane;
 import model.NodeElement;
 import model.Question;
@@ -65,7 +63,7 @@ public class MovingThread extends Thread {
         this.root = root;
         this.score = score;
     }
-    
+
     public MovingThread(int operation, Group root, Score score, NodeElement[] nodes) {
         this.operation = operation;
         this.root = root;
@@ -83,11 +81,11 @@ public class MovingThread extends Thread {
     }
 
     public void execute() {
-        
+
         try {
-            
+
             if (this.operation == BUBBLE_SORT) {
-                
+
 //                this.score.createElements();
                 Main.tf.setText(Constants.BUBBLE_SORT);
                 this.score.setAskedQuestions(0);
@@ -98,33 +96,128 @@ public class MovingThread extends Thread {
                 BubbleSort();
                 clearNodes(nodes);
                 Main.events.setText(Constants.EVENT + "\n\n"
-                            + Constants.SIMULATION_FINISHED);
-                
-                
+                        + Constants.SIMULATION_FINISHED);
+
+
                 DecimalFormat df = new DecimalFormat("#.#");
                 String points = df.format(this.score.getPoints()) + "%";
                 JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
-                
+
                 this.score.removeElements();
                 this.score.fillSetProgressBar(0);
                 Main.tf.setText(Constants.NO_CODE);
                 Main.events.setText(Constants.EVENT + "\n\n"
-                            + Constants.NO_SIMULATION);
+                        + Constants.NO_SIMULATION);
 
             } else if (this.operation == SELECTION_SORT) {
+
+                Main.tf.setText(Constants.SELECTION_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+
                 SelectionSort();
+
+                clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+
             } else if (this.operation == INSERTION_SORT) {
+
+                Main.tf.setText(Constants.INSERTION_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+
                 InsertionSort();
+
+                clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+
             } else if (this.operation == SHELL_SORT) {
+
+                Main.tf.setText(Constants.SHELL_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+
                 ShellSort();
+                clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+
+
             } else if (this.operation == IN_PLACE_QUICK_SORT) {
+
+                Main.tf.setText(Constants.IN_PLACE_QUICK_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+
                 InPlaceQuickSort(0, nodes.length - 1);
+
+                clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+
             }
 
         } finally {
-//            Main.removeElements();
+
             Main.running = false;
             return;
+
         }
 
     }
@@ -137,52 +230,61 @@ public class MovingThread extends Thread {
         this.nodes = nodes;
     }
 
-    public void InsertionSort() {
-
-        int i, j;
-
-        for (i = 1; i < nodes.length; i++) {
-
-            j = i;
-
-            while ((nodes[j].getElementAsInt() < nodes[j - 1].getElementAsInt())) {
-
-                testMoving(nodes[j - 1], nodes[j], j - 1, j, 0);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-//                aux = nodes[j].getElementAsInt();
-//                nodes[j].setElementAsInt(nodes[j - 1].getElementAsInt());
-//                nodes[j - 1].setElementAsInt(aux);
-                j--;
-                if (j == 0) {
-                    break;
-                }
-
-            }
-        }
-
-    }
-
     public void SelectionSort() {
 
-        int index_min, aux;
-
+        int index_min;
+        Main.variables.setText(Constants.VARIABLES + "index_min = 0    "
+                + "i = 0    j = 0    tamanho_vetor = " + nodes.length);
         for (int i = 0; i < nodes.length; i++) {
+            Main.variables.setText(Constants.VARIABLES + "index_min = 0    "
+                    + "i = 0    j = 0    tamanho_vetor = " + nodes.length);
+            this.score.selectText("para ( int i = 0; i < tamanho_vetor; i++ ) {\n");
 
+            this.score.selectText("  index_min = i\n");
             index_min = i;
+            Main.variables.setText(Constants.VARIABLES + "index_min = " + index_min + "    "
+                    + "i = " + i + "    j = 0    tamanho_vetor = " + nodes.length);
 
             for (int j = i + 1; j < nodes.length; j++) {
+                Main.variables.setText(Constants.VARIABLES + "index_min = " + index_min + "    "
+                        + "i = " + i + "    j = " + j + "    tamanho_vetor = " + nodes.length);
+                this.score.selectText("    para ( int j = i + 1; j < tamanho_vetor; j++ ) {\n");
+
+                this.score.selectText("      se ( v [ j ] < v [ index_min ] ) {\n");
                 if (nodes[j].getElementAsInt() < nodes[index_min].getElementAsInt()) {
+                    Main.variables.setText(Constants.VARIABLES + "index_min = " + index_min + "    "
+                            + "i = " + i + "    j = " + j + "    tamanho_vetor = " + nodes.length);
+                    this.score.selectText("      index_min = j;\n");
                     index_min = j;
+                    Main.variables.setText(Constants.VARIABLES + "index_min = " + index_min + "    "
+                            + "i = " + i + "    j = " + j + "    tamanho_vetor = " + nodes.length);
                 }
             }
 
+            this.score.selectText("    se ( index_min != i ) {\n");
             if (index_min != i) {
+                Main.variables.setText(Constants.VARIABLES + "index_min = " + index_min + "    "
+                        + "i = " + i + "    j = 0    tamanho_vetor = " + nodes.length);
 
+                Main.canChoose = true;
+                Main.chosenElements = 0;
+                clearNodes(nodes);
+
+                Question question = new Question(0, i, index_min, nodes);
+
+                if (question.ask(Question.ELEMENT_CHANGE)) {
+                    Constants.playQuestionSound(0);
+                    this.score.addRightAnswer();
+                } else {
+                    Constants.playQuestionSound(1);
+                    this.score.addWrongAnswer();
+                }
+                this.score.addTotal();
+                this.score.fillSetProgressBar(this.score.getPoints());
+
+                Main.canChoose = false;
+
+                this.score.selectText("      troca(v [ i ], v [ index_min ]);\n");
                 testMoving(nodes[i], nodes[index_min], i, index_min, 0);
 
                 try {
@@ -191,12 +293,74 @@ public class MovingThread extends Thread {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-//                aux = nodes[index_min].getElementAsInt();
-//                nodes[index_min].setElementAsInt(nodes[i].getElementAsInt());
-//                nodes[i].setElementAsInt(aux);
-
             }
 
+        }
+
+    }
+
+    public void InsertionSort() {
+
+        int i, j;
+        Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                + "i = 0    j = 0");
+
+        for (i = 1; i < nodes.length; i++) {
+            Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                    + "i = " + i + "    j = 0");
+            this.score.selectText("para(i = 1; i < tamanho_vetor; i++){\n\n");
+
+            this.score.selectText("   j = i;\n\n");
+            j = i;
+            Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                    + "i = " + i + "    j = " + j);
+
+            while ((nodes[j].getElementAsInt() < nodes[j - 1].getElementAsInt())) {
+                Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                        + "i = " + i + "    j = " + j);
+                this.score.selectText("      enquanto(v[ j ] < v[ j - 1 ]) {\n\n");
+
+                Main.canChoose = true;
+                Main.chosenElements = 0;
+                clearNodes(nodes);
+
+                Question question = new Question(0, j - 1, j, nodes);
+
+                if (question.ask(Question.ELEMENT_CHANGE)) {
+                    Constants.playQuestionSound(0);
+                    this.score.addRightAnswer();
+                } else {
+                    Constants.playQuestionSound(1);
+                    this.score.addWrongAnswer();
+                }
+                this.score.addTotal();
+                this.score.fillSetProgressBar(this.score.getPoints());
+
+                Main.canChoose = false;
+
+                this.score.selectText("         troca(v [ j - 1], v [ j ]);\n");
+                testMoving(nodes[j - 1], nodes[j], j - 1, j, 0);
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                this.score.selectText("         j--.\n\n");
+                j--;
+                Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                        + "i = " + i + "    j = " + j);
+
+                this.score.selectText("         se(j == 0) {\n");
+                if (j == 0) {
+                    Main.variables.setText(Constants.VARIABLES + "tamanho_vetor = " + nodes.length + "    "
+                            + "i = " + i + "    j = " + j);
+                    this.score.selectText("           quebrar o laço;\n");
+                    break;
+                }
+
+            }
         }
 
     }
@@ -209,7 +373,7 @@ public class MovingThread extends Thread {
         }
 
     }
-    
+
     public static void clearNodeColor(NodeElement nodes[]) {
 
         for (NodeElement nodeElement : nodes) {
@@ -220,45 +384,45 @@ public class MovingThread extends Thread {
     }
 
     public void BubbleSort() {
-        
-        Main.variables.setText(Constants.VARIABLES + "troca = null    " +
-                "j = 0    i = 0");
+
+        Main.variables.setText(Constants.VARIABLES + "troca = null    "
+                + "j = 0    i = 0");
         this.score.selectText("troca = true;\n");
         boolean swapped = true;
-        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = 0    i = 0");
+        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                + "j = 0    i = 0");
         this.score.selectText("j = 0;\n\n");
         int j = 0;
-        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = " + j + "    i = 0");
-        
+        Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                + "j = " + j + "    i = 0");
+
         this.score.selectText("enquanto(troca == true) {\n");
         while (swapped) {
             this.score.selectText("  troca = false;\n");
             swapped = false;
-            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = " + j + "    i = 0");
+            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                    + "j = " + j + "    i = 0");
             this.score.selectText("  j += 1;\n");
             j++;
-            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = " + j + "    i = 0");
-            
+            Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                    + "j = " + j + "    i = 0");
+
             for (int i = 0; i < nodes.length - j; i++) {
-                Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = " + j + "    i = " + i);
+                Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                        + "j = " + j + "    i = " + i);
                 this.score.selectText("    para(i = 0; i < tamanho_vetor; i++) {\n");
-                
+
                 this.score.selectText("      se(vetor[ i ] > vetor [ i + 1 ] {\n");
                 if (nodes[i].getElementAsInt() > nodes[i + 1].getElementAsInt()) {
-                Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    " +
-                "j = " + j + "    i = " + i);    
+                    Main.variables.setText(Constants.VARIABLES + "troca = " + swapped + "    "
+                            + "j = " + j + "    i = " + i);
 
                     Main.canChoose = true;
                     Main.chosenElements = 0;
                     clearNodes(nodes);
-                    
+
                     Question question = new Question(0, i, i + 1, nodes);
-                    
+
                     if (question.ask(Question.ELEMENT_CHANGE)) {
                         Constants.playQuestionSound(0);
                         this.score.addRightAnswer();
@@ -268,9 +432,9 @@ public class MovingThread extends Thread {
                     }
                     this.score.addTotal();
                     this.score.fillSetProgressBar(this.score.getPoints());
-                    
+
                     Main.canChoose = false;
-                    
+
                     this.score.selectText("        troca(vetor[ i ], vetor[ i + 1]);\n");
                     testMoving(nodes[i], nodes[i + 1], i, i + 1, 0);
 
@@ -284,9 +448,6 @@ public class MovingThread extends Thread {
                         Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-//                    tmp = nodes[i].getElementAsInt();
-//                    nodes[i].setElementAsInt(nodes[i + 1].getElementAsInt());
-//                    nodes[i + 1].setElementAsInt(tmp);
                     swapped = true;
                 }
             }
@@ -296,19 +457,63 @@ public class MovingThread extends Thread {
 
     public void ShellSort() {
 
+        Main.variables.setText(Constants.VARIABLES + "n = 0    "
+                + "h = 0    i = 0    j = 0    c = null");
+        this.score.selectText("n = tamanho_vetor;\n");
         int n = nodes.length;
+        Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                + "h = 0    i = 0    j = 0    c = null");
+        this.score.selectText("h = n / 2;\n\n");
         int h = n / 2;
+        Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                + "h = " + h + "    i = 0    j = 0    c = null");
         int j;
         NodeElement c;
 
         while (h > 0) {
+            Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                    + "h = " + h + "    i = 0    j = 0    c = null");
+            this.score.selectText("enquanto( h > 0) {\n\n");
+
             for (int i = h; i < n; i++) {
 
+                Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                        + "h = " + h + "    i = " + i + "    j = 0    c = null");
+                this.score.selectText("   para (i = h; i < n; i++) {\n");
+
+                this.score.selectText("     c = vetor[ i ];\n");
                 c = nodes[i];
+                Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                        + "h = " + h + "    i = " + i + "    j = 0    c = " + c.getElementAsInt());
+                this.score.selectText("     j = i;\n\n");
                 j = i;
+                Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                        + "h = " + h + "    i = " + i + "    j = " + j + "    c = " + c.getElementAsInt());
 
                 while (j >= h && nodes[j - h].getElementAsInt() > c.getElementAsInt()) {
+                    Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                            + "h = " + h + "    i = " + i + "    j = " + j + "    c = " + c.getElementAsInt());
+                    this.score.selectText("       enquanto ( j >= h  E vetor [ j - h ] > c ) {\n");
 
+                    Main.canChoose = true;
+                    Main.chosenElements = 0;
+                    clearNodes(nodes);
+
+                    Question question = new Question(0, j - h, j, nodes);
+
+                    if (question.ask(Question.ELEMENT_CHANGE)) {
+                        Constants.playQuestionSound(0);
+                        this.score.addRightAnswer();
+                    } else {
+                        Constants.playQuestionSound(1);
+                        this.score.addWrongAnswer();
+                    }
+                    this.score.addTotal();
+                    this.score.fillSetProgressBar(this.score.getPoints());
+
+                    Main.canChoose = false;
+
+                    this.score.selectText("         troca( vetor[ j - h ], vetor [ j ] );\n");
                     testMoving(nodes[j - h], nodes[j], j - h, j, 0);
 
                     try {
@@ -317,43 +522,100 @@ public class MovingThread extends Thread {
                         Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
+                    this.score.selectText("         j = j - h;\n");
                     j = j - h;
+                    Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                            + "h = " + h + "    i = " + i + "    j = " + j + "    c = " + c.getElementAsInt());
 
                 }
 
+                this.score.selectText("       vetor[ j ] = c;\n");
                 nodes[j] = c;
+                Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                        + "h = " + h + "    i = " + i + "    j = " + j + "    c = " + c.getElementAsInt());
 
             }
 
+            this.score.selectText("   h = h / 2;\n");
             h = h / 2;
+            Main.variables.setText(Constants.VARIABLES + "n = " + n + "    "
+                    + "h = " + h + "    i = 0    j = 0    c = null");
 
         }
     }
 
     public void InPlaceQuickSort(int beginning, int end) {
 
+        this.score.selectText("se ( comeco >= fim ) {\n");
         if (beginning >= end) {
+            this.score.selectText("  retorne;\n");
             return;
         }
 
+        this.score.selectText("pivo = v [ fim ];\n");
         int pivot = nodes[end].getElementAsInt();
+        
+        this.score.selectText("l = comeco;\n");
         int l = beginning;
+        
+        this.score.selectText("r = fim - 1;\n\n");
         int r = end - 1;
 
         while (l <= r) {
+            this.score.selectText("enquanto( l <= r) {\n");
 
-
+            this.score.selectText("  enquanto ( l <= r e v [ l ] <= pivo ) {\n");
             while (l <= r && nodes[l].getElementAsInt() <= pivot) {
+                this.score.selectText("     l++;\n");
                 l++;
             }
 
+            this.score.selectText("  enquanto ( r >= l e v [ r ] >= pivo ) {\n");
             while (r >= l && nodes[r].getElementAsInt() >= pivot) {
                 r--;
             }
 
             if (l < r) {
+
+                Main.canChoose = true;
+                Main.chosenElements = 0;
+                clearNodes(nodes);
+
+                Question question = new Question(0, l, r, nodes);
+
+                if (question.ask(Question.ELEMENT_CHANGE)) {
+                    Constants.playQuestionSound(0);
+                    this.score.addRightAnswer();
+                } else {
+                    Constants.playQuestionSound(1);
+                    this.score.addWrongAnswer();
+                }
+                this.score.addTotal();
+                this.score.fillSetProgressBar(this.score.getPoints());
+
+                Main.canChoose = false;
+
+
                 testMoving(nodes[l], nodes[r], l, r, 0);
             }
+
+            Main.canChoose = true;
+            Main.chosenElements = 0;
+            clearNodes(nodes);
+
+            Question question = new Question(0, l, end, nodes);
+
+            if (question.ask(Question.ELEMENT_CHANGE)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChoose = false;
 
             testMoving(nodes[l], nodes[end], l, end, 0);
 
