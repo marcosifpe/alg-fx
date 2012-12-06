@@ -546,6 +546,8 @@ public class MovingThread extends Thread {
 
     public void InPlaceQuickSort(int beginning, int end) {
 
+        Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = 0    l = 0    r = 0");
         this.score.selectText("se ( comeco >= fim ) {\n");
         if (beginning >= end) {
             this.score.selectText("  retorne;\n");
@@ -554,28 +556,45 @@ public class MovingThread extends Thread {
 
         this.score.selectText("pivo = v [ fim ];\n");
         int pivot = nodes[end].getElementAsInt();
+        Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = 0    r = 0");
+        
         
         this.score.selectText("l = comeco;\n");
         int l = beginning;
+        Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = 0");
         
         this.score.selectText("r = fim - 1;\n\n");
         int r = end - 1;
+        Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
 
         while (l <= r) {
+            Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
             this.score.selectText("enquanto( l <= r) {\n");
 
             this.score.selectText("  enquanto ( l <= r e v [ l ] <= pivo ) {\n");
             while (l <= r && nodes[l].getElementAsInt() <= pivot) {
                 this.score.selectText("     l++;\n");
                 l++;
+                Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
             }
 
             this.score.selectText("  enquanto ( r >= l e v [ r ] >= pivo ) {\n");
             while (r >= l && nodes[r].getElementAsInt() >= pivot) {
+                this.score.selectText("     r--;\n");
                 r--;
+                Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
             }
 
+            this.score.selectText("  se ( l < r ) {\n");
             if (l < r) {
+                Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
 
                 Main.canChoose = true;
                 Main.chosenElements = 0;
@@ -595,8 +614,17 @@ public class MovingThread extends Thread {
 
                 Main.canChoose = false;
 
-
+                this.score.selectText("    troca( v [ l ], v [ r ] );\n");
                 testMoving(nodes[l], nodes[r], l, r, 0);
+                
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
             }
 
             Main.canChoose = true;
@@ -617,9 +645,21 @@ public class MovingThread extends Thread {
 
             Main.canChoose = false;
 
+            this.score.selectText("  troca( v [ l ], v [ fim ] );\n");
             testMoving(nodes[l], nodes[end], l, end, 0);
 
+            try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            
+            Main.variables.setText(Constants.VARIABLES + "comeco = " + beginning + "    "
+                    + "fim = " + end + "\n" + "pivo = " + pivot + "    l = " + l + "    r = " + r);
+            
+            this.score.selectText("  inPlaceQuickSort(v, comeco, l - 1);\n");
             InPlaceQuickSort(beginning, l - 1);
+            this.score.selectText("  inPlaceQuickSort(v, l + 1, fim);");
             InPlaceQuickSort(l + 1, end);
 
         }
