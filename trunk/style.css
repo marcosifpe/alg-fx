@@ -1,0 +1,16 @@
+.text-f {
+-fx-stroke: blue;
+}
+
+#text-f {
+-fx-stroke: blue;
+-fx-background-color: red;
+}
+
+.root {
+     -fx-background-image: url("background.gif");
+}
+
+#root {
+     -fx-background-image: url("background.gif");
+}
