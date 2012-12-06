@@ -2,11 +2,7 @@
     -fx-stroke: blue;
     -fx-border-color: black;
     -fx-border-width: 3px;
-    /*    -fx-border-radius: 16px;*/
-    /*    -fx-background-color: linear-gradient(#61a2b1, #2A5058);*/
     -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
-    /*    -fx-font-weight: bold;*/
-    /*    -fx-text-fill: white;*/
 }
 
 #event {
@@ -16,7 +12,6 @@
     -fx-border-radius: 12px;
     -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
     -fx-font-weight: bold;
-    /*    -fx-text-fill: white;*/
     -fx-font-size: 14pt;
 }
 

@@ -65,7 +65,7 @@ public class Question {
             Main.events.setText(Constants.EVENT + "\n\n"
                     + Constants.ELEMENT_CHANGE);
         }
-
+        
         boolean response = false;
 
         while (!hasAnswered()) {
