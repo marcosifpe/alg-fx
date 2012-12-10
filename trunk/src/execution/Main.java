@@ -284,7 +284,7 @@ public class Main extends Application {
 //        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
 //                Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0, 0);
         BinaryNode node = new BinaryNode(BinaryNode.ROOT, 30.0, Integer.toString(number),
-                Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0, 0);
+                x, y, 0);
 //        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
 //                800.0, 40.0, 0);
 
