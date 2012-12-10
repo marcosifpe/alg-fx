@@ -15,9 +15,11 @@ import javafx.scene.media.MediaPlayer;
 public class Constants {
 
     public static String EVENT = " Eventos: ";
+    public static String INVALID_NUMBER = " Número inválido! Tente novamente.";
     public static String VARIABLES = " Variáveis: " + "\n\n";
     public static String NO_CODE = " Pseudocódigo ainda não selecionado.";
     public static String ELEMENT_CHANGE = " Escolha os elementos à serem trocados.";
+    public static String TREE_INSERTION = " Escolha o elemento à ser inserido.";
     public static String NO_SIMULATION = " Nenhuma simulação selecionada. \n"
             + " Escolha dentre as opções dadas no menu à esquerda.";
     public static String NO_VARIABLES = " Nenhuma variável disponível. \n"
@@ -106,6 +108,17 @@ public class Constants {
             + "    vetorContagem[i - min]--;\n\n"
             + "  }\n\n"
             + "}\n\n";
+    public static final String BINARY_INSERTION = "        ÁRVORE BINÁRIA - INSERÇÂO(elemento, no)\t\n\n"
+            + "se (no == null) entao {\n"
+            + "  no = novo No(elemento);\n"
+            + "} senao se (elemento = no.elemento) entao {\n"
+            + "    ERRO: Elemento já existe!\n"
+            + "} senao se (elemento < no.elemento) entao {\n"
+            + "    no.esquerda = insercao(elemento, no.esquerda);\n"
+            + "} senao {\n"
+            + "    no.direita = insercao(elemento, no.direita);\n"
+            + "}\n"
+            + "retorne no";
     
     public static String GUESS_RIGHT = "acerto.wav";
     public static String GUESS_WRONG = "falha.wav";
