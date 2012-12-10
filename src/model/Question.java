@@ -19,6 +19,7 @@ public class Question {
     private NodeElement nodes[];
     private boolean answered = false;
     public static final int ELEMENT_CHANGE = 1;
+    
 
     public Question(int chosenElements, int firstPosition, int secondPosition, NodeElement[] nodes) {
         this.chosenElements = chosenElements;
@@ -58,7 +59,7 @@ public class Question {
     public void setSecondPosition(int secondPosition) {
         this.secondPosition = secondPosition;
     }
-
+    
     public boolean ask(int operation) {
 
         if (operation == ELEMENT_CHANGE) {

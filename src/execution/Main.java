@@ -5,11 +5,15 @@
 package execution;
 
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
@@ -18,8 +22,10 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.BinaryNode;
 import model.NodeElement;
 import model.Score;
+import threads.InsertionThread;
 import threads.MovingThread;
 
 /**
@@ -36,19 +42,28 @@ public class Main extends Application {
     private Label scoreLabel;
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
-    private FlowPane fp;
-    public boolean theSwitch = false;
-    private final int NODES_LENGHT = 8;
+    private FlowPane fp, binaryTreeFp;
+    private FlowPane flowpane, questionPane;
+    private TextField numberField;
+    private boolean decision = false;
+    private int returningNumber = -2;
+    private boolean binaryTreeOn = false;
+    private List<BinaryNode> binaryTree;
+    private boolean hitButton = false;
+    private final int MAX_TREE_HEIGHT = 4;
+    private final int NODES_LENGHT = 4;
     private final int SPACING_X = 450;
     private final int SLEEP_TIME = 50;
     private final int Y_POSITION = 150;
     public static boolean running = false;
     public static boolean canChoose = false;
+    public static boolean insertionNumberChosen = false;
     public static TextArea events;
     public static TextArea variables;
     public static FlowPane scoring;
     public static TextArea tf;
     public static int chosenElements = 0;
+    public static int numberSet = -1;
     private final Interpolator interpolator = Interpolator.LINEAR;
 
     public static void main(String[] args) {
@@ -59,6 +74,194 @@ public class Main extends Application {
     public void start(Stage stage) {
         initialize(stage);
         stage.show();
+    }
+
+    public void initializeTreeElement() {
+        binaryTree = new ArrayList<>();
+    }
+
+    public List<BinaryNode> getBinaryTree() {
+        return binaryTree;
+    }
+
+    public void setBinaryTree(List<BinaryNode> binaryTree) {
+        this.binaryTree = binaryTree;
+    }
+
+    public FlowPane getBinaryTreeFp() {
+        return binaryTreeFp;
+    }
+
+    public void setBinaryTreeFp(FlowPane binaryTreeFp) {
+        this.binaryTreeFp = binaryTreeFp;
+    }
+
+    public boolean isBinaryTreeOn() {
+        return binaryTreeOn;
+    }
+
+    public void setBinaryTreeOn(boolean binaryTreeOn) {
+        this.binaryTreeOn = binaryTreeOn;
+    }
+
+    public boolean isDecision() {
+        return decision;
+    }
+
+    public void setDecision(boolean decision) {
+        this.decision = decision;
+    }
+
+    public FlowPane getFlowpane() {
+        return flowpane;
+    }
+
+    public void setFlowpane(FlowPane flowpane) {
+        this.flowpane = flowpane;
+    }
+
+    public FlowPane getFp() {
+        return fp;
+    }
+
+    public void setFp(FlowPane fp) {
+        this.fp = fp;
+    }
+
+    public Main getMain() {
+        return main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
+    }
+
+    public NodeElement[] getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(NodeElement[] nodes) {
+        this.nodes = nodes;
+    }
+
+    public TextField getNumberField() {
+        return numberField;
+    }
+
+    public void setNumberField(TextField numberField) {
+        this.numberField = numberField;
+    }
+
+    public FlowPane getQuestionPane() {
+        return questionPane;
+    }
+
+    public void setQuestionPane(FlowPane questionPane) {
+        this.questionPane = questionPane;
+    }
+
+    public int getReturningNumber() {
+        return returningNumber;
+    }
+
+    public void setReturningNumber(int returningNumber) {
+        this.returningNumber = returningNumber;
+    }
+    
+    public void createNumberQuestion() {
+        
+        events.setText(Constants.EVENT + "\n\n"
+                    + Constants.TREE_INSERTION);
+        
+        binaryTreeFp.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual o elemento que deseja inserir?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Inserir");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+                        
+                        int number = Integer.parseInt(numberField.getText());
+                        
+                        InsertionThread it = new InsertionThread(number, main, score);
+                        running = true;
+                        Platform.runLater(it);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                binaryTreeFp.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+        
+    }
+    
+    public void removeQuestion() {
+        root.getChildren().remove(questionPane);
+        binaryTreeFp.setDisable(false);
+    }
+
+    public Group getAnimation() {
+        return animation;
+    }
+
+    public void setAnimation(Group animation) {
+        this.animation = animation;
+    }
+
+    public boolean isHitButton() {
+        return hitButton;
+    }
+
+    public void setHitButton(boolean hitButton) {
+        this.hitButton = hitButton;
     }
 
     public void createElements() {
@@ -75,6 +278,21 @@ public class Main extends Application {
 
 
     }
+    
+    public void createTreeElement(int number, double x, double y) {
+
+//        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
+//                Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0, 0);
+        BinaryNode node = new BinaryNode(BinaryNode.ROOT, 30.0, Integer.toString(number),
+                Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0, 0);
+//        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
+//                800.0, 40.0, 0);
+
+        binaryTree.add(node);
+        animation.getChildren().add(node.getStackPane());
+        
+
+    }
 
     public void removeElements() {
 
@@ -85,11 +303,12 @@ public class Main extends Application {
         System.gc();
         nodes = new NodeElement[NODES_LENGHT];
 
-
     }
 
     public void initialize(Stage stage) {
 
+        initializeTreeElement();
+        
         main = this;
 
         fp = new FlowPane();
@@ -140,8 +359,6 @@ public class Main extends Application {
         soundMenu.getItems().add(onItem);
         soundMenu.getItems().add(offItem);
         soundToggle.getToggles().get(0).setSelected(true);
-//        MenuItem aboutItem = new MenuItem("Sobre");
-//        MenuItem aboutItem = new MenuItem("Sobre");
         Menu audioMenu = MenuBuilder.create().text("Opções").items(soundMenu).build();
         Menu menu = MenuBuilder.create().text("Ajuda").items(aboutItem).build();
         menuBar.getMenus().addAll(audioMenu, menu);
@@ -155,9 +372,6 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-//                    createElements();
-//                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.BUBBLE_SORT, root, score, animation);
-
                     createElements();
                     MovingThread mt = new MovingThread(MovingThread.BUBBLE_SORT, root, score, nodes);
                     running = true;
@@ -173,7 +387,6 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-//                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SELECTION_SORT, root, score, animation);
                     createElements();
                     MovingThread mt = new MovingThread(MovingThread.SELECTION_SORT, root, score, nodes);
                     running = true;
@@ -188,12 +401,11 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!running) {
-                    
                     createElements();
                     MovingThread mt = new MovingThread(MovingThread.INSERTION_SORT, root, score, nodes);
                     running = true;
                     mt.start();
-                    
+
                 }
             }
         });
@@ -206,7 +418,6 @@ public class Main extends Application {
                 if (!running) {
                     createElements();
                     MovingThread mt = new MovingThread(MovingThread.SHELL_SORT, root, score, nodes);
-//                    MovingThread mt = new MovingThread(nodes[0], nodes[NODES_LENGHT - 1], nodes, MovingThread.SHELL_SORT, root, score, animation);
                     running = true;
                     mt.start();
                 }
@@ -274,35 +485,90 @@ public class Main extends Application {
 
             }
         });
+        
+        Button countingButton = new Button("Counting Sort");
+        countingButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        Button toTest = new Button("TESTING");
-        toTest.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+                if (!running) {
+                }
+            }
+        });
+
+        Button binaryTreeButton = new Button("Árvore Binária");
+        binaryTreeButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent t) {
 
-                if (!theSwitch) {
-                    fp = new FlowPane();
-                    fp.setId("text-f");
-                    fp.setPrefWidth(200);
-                    fp.setPrefHeight(200);
-                    Label lb = new Label("Teste:");
+                if (!binaryTreeOn && !running) {
+
+                    binaryTreeFp = new FlowPane();
+                    binaryTreeFp.setId("text-f");
+                    binaryTreeFp.setPrefWidth(200);
+                    binaryTreeFp.setPrefHeight(195);
+                    binaryTreeFp.setTranslateX(102);
+                    binaryTreeFp.setTranslateY(431);
+                    Label lb = new Label("    Árvore Binária de Pesquisa:");
+                    lb.setId("sort");
                     lb.setPrefWidth(200);
-                    fp.getChildren().add(lb);
+                    lb.setPrefHeight(40);
+                    binaryTreeFp.getChildren().add(lb);
 
-                    Button b1 = new Button("Sim");
-                    b1.setPrefWidth(100);
-                    Button b2 = new Button("Não");
-                    b2.setPrefWidth(100);
-                    fp.getChildren().add(b1);
-                    fp.getChildren().add(b2);
+                    Button search = new Button("Pesquisa");
+                    search.setPrefWidth(200);
+                    search.setPrefHeight(37);
+                    Button insertion = new Button("Inserção");
+                    insertion.setPrefWidth(200);
+                    insertion.setPrefHeight(37);
 
-                    root.getChildren().add(fp);
-                    theSwitch = true;
+                    insertion.setOnAction(new EventHandler<ActionEvent>() {
 
-                } else {
-                    root.getChildren().remove(fp);
-                    theSwitch = false;
+                        @Override
+                        public void handle(ActionEvent t) {
+                            
+                            createNumberQuestion();
+//                            Platform.runLater(new InsertionThread(main, score));
+
+                        }
+                    });
+
+                    Button removal = new Button("Remoção");
+                    removal.setPrefWidth(200);
+                    removal.setPrefHeight(37);
+                    Button back = new Button("Voltar");
+                    back.setPrefWidth(200);
+                    back.setPrefHeight(37);
+                    back.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            root.getChildren().remove(binaryTreeFp);
+                            for (Node n : root.getChildren()) {
+
+                                n.setDisable(false);
+
+                            }
+                            binaryTreeOn = false;
+                        }
+                    });
+
+                    binaryTreeFp.getChildren().add(search);
+                    binaryTreeFp.getChildren().add(insertion);
+                    binaryTreeFp.getChildren().add(removal);
+                    binaryTreeFp.getChildren().add(back);
+
+                    root.getChildren().add(binaryTreeFp);
+
+                    for (Node n : root.getChildren()) {
+                        if (n != binaryTreeFp && n == flowpane) {
+                            n.setDisable(true);
+                        }
+                    }
+
+                    binaryTreeOn = true;
+
                 }
             }
         });
@@ -314,14 +580,16 @@ public class Main extends Application {
         button1.setPrefWidth(200);
         button2.setPrefWidth(200);
         button3.setPrefWidth(200);
+        countingButton.setPrefWidth(200);
         button4.setPrefWidth(200);
         button5.setPrefWidth(200);
         button6.setPrefWidth(200);
         button7.setPrefWidth(200);
         button8.setPrefWidth(200);
-        toTest.setPrefWidth(200);
+//        binaryTreeButton.setPrefWidth(200);
+        binaryTreeButton.setPrefWidth(401);
 
-        FlowPane flowpane = new FlowPane();
+        flowpane = new FlowPane();
         flowpane.maxWidth(450);
         flowpane.setPrefHeight(1000);
         flowpane.setId("flow");
@@ -345,13 +613,13 @@ public class Main extends Application {
 
         TilePane tilePane1 = new TilePane();
         tilePane1.maxWidth(450);
-        tilePane1.setPrefColumns(2);
-        tilePane1.setPrefRows(3);
+        tilePane1.setPrefColumns(1);
+        tilePane1.setPrefRows(4);
 
         tilePane.getChildren().addAll(button,
-                button1, button2, button3, button4, toTest);
+                button1, button2, button3, countingButton, button4);
 
-        tilePane1.getChildren().addAll(button5, button6, button7, button8);
+        tilePane1.getChildren().addAll(binaryTreeButton, button6, button7, button8);
         flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
 
 
@@ -397,13 +665,13 @@ public class Main extends Application {
     }
 
     public void selectText(String code) {
-        
+
         tf.requestFocus();
         String s = tf.getText();
         int i = s.indexOf(code);
         tf.positionCaret(i);
         tf.selectForward();
-        tf.selectRange(i, (i + code.length()) );
+        tf.selectRange(i, (i + code.length()));
         sleep(SLEEP_TIME * 15);
 
     }

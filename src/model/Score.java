@@ -48,16 +48,7 @@ public class Score {
     
     public void fillSetProgressBar(double percentage) {
         
-        System.out.println("Percent: " + percentage / 100.0);
-        
         main.getPointProgressBar().setProgress(percentage / 100.0);
-        
-        System.out.println("Progress: " + main.getPointProgressBar().getProgress());
-        System.out.println("Points: " + getPoints());
-        
-//        DecimalFormat df = new DecimalFormat("#.#");
-//        main.getScoreLabel().setText("  aa" + df.format(getPoints()) + "%");
-//        main.getScoreLabel().setText("  aa%");
         
     }
     
@@ -131,4 +122,5 @@ public class Score {
     public void addTotal() {
         this.askedQuestions++;
     }
+    
 }
