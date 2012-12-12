@@ -66,20 +66,14 @@ public class InsertionThread extends Thread {
     public void insertNumber(int number) {
         
         if (this.main.getBinaryTree().isEmpty()) {
-            System.out.println("If");
-            this.main.createTreeElement(number, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0);
-//            nodes[i - 1] = new NodeElement(40.0, Integer.toString((int) (i + Math.random() * 200)), 2, (i * 80) + SPACING_X, Y_POSITION);
-//            BinaryNode node = new BinaryNode(null, null, null, 40.0, number + "", 
-//                    800.0, 40.0, 0);
-//            this.main.getBinaryTree().add(node);
-//            
-//            this.main.getAnimation().getChildren().add(node.getStackPane());
+            
+            this.main.createTreeElement(number, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65, 40.0);
             
         } else {
-            System.out.println("Else!");
+            
             int size = this.main.getBinaryTree().size();
-            this.main.createTreeElement(number, this.main.getBinaryTree().get(size - 1).getX() - 70, 
-                    this.main.getBinaryTree().get(size - 1).getY() + 80);
+            this.main.createTreeElement(number, this.main.getBinaryTree().get(size - 1).getX() - 100, 
+                    this.main.getBinaryTree().get(size - 1).getY() + 70);
         }
         
     }

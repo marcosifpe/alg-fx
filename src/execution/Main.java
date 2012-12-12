@@ -42,12 +42,17 @@ public class Main extends Application {
     private Label scoreLabel;
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
-    private FlowPane fp, binaryTreeFp;
+    private FlowPane fp, binaryTreeFlowPane, vectorFlowPane;
+    private FlowPane stackFlowPane, listFlowPane, queueFlowPane;
     private FlowPane flowpane, questionPane;
     private TextField numberField;
     private boolean decision = false;
     private int returningNumber = -2;
     private boolean binaryTreeOn = false;
+    private boolean vectorOn = false;
+    private boolean stackOn = false;
+    private boolean listOn = false;
+    private boolean queueOn = false;
     private List<BinaryNode> binaryTree;
     private boolean hitButton = false;
     private final int MAX_TREE_HEIGHT = 4;
@@ -89,11 +94,11 @@ public class Main extends Application {
     }
 
     public FlowPane getBinaryTreeFp() {
-        return binaryTreeFp;
+        return binaryTreeFlowPane;
     }
 
     public void setBinaryTreeFp(FlowPane binaryTreeFp) {
-        this.binaryTreeFp = binaryTreeFp;
+        this.binaryTreeFlowPane = binaryTreeFp;
     }
 
     public boolean isBinaryTreeOn() {
@@ -173,7 +178,7 @@ public class Main extends Application {
         events.setText(Constants.EVENT + "\n\n"
                     + Constants.TREE_INSERTION);
         
-        binaryTreeFp.setDisable(true);
+        binaryTreeFlowPane.setDisable(true);
 
         returningNumber = -2;
 
@@ -233,7 +238,7 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 root.getChildren().remove(questionPane);
-                binaryTreeFp.setDisable(false);
+                binaryTreeFlowPane.setDisable(false);
                 events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
             }
         });
@@ -245,7 +250,7 @@ public class Main extends Application {
     
     public void removeQuestion() {
         root.getChildren().remove(questionPane);
-        binaryTreeFp.setDisable(false);
+        binaryTreeFlowPane.setDisable(false);
     }
 
     public Group getAnimation() {
@@ -279,21 +284,6 @@ public class Main extends Application {
 
     }
     
-    public void createTreeElement(int number, double x, double y) {
-
-//        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
-//                Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.6, 40.0, 0);
-        BinaryNode node = new BinaryNode(BinaryNode.ROOT, 30.0, Integer.toString(number),
-                x, y, 0);
-//        BinaryNode node = new BinaryNode(null, null, null, 30.0, Integer.toString(number),
-//                800.0, 40.0, 0);
-
-        binaryTree.add(node);
-        animation.getChildren().add(node.getStackPane());
-        
-
-    }
-
     public void removeElements() {
 
         for (NodeElement e : nodes) {
@@ -303,6 +293,37 @@ public class Main extends Application {
         System.gc();
         nodes = new NodeElement[NODES_LENGHT];
 
+    }
+    
+    public int count = 0;
+    public void createTreeElement(int number, double x, double y) {
+
+        BinaryNode node;
+        
+        if (binaryTree.isEmpty()) {
+            node = new BinaryNode(BinaryNode.ROOT, 30.0, Integer.toString(number),
+                    x, y, count);
+        } else {
+            node = new BinaryNode(BinaryNode.NORMAL_NODE, 30.0, Integer.toString(number),
+                    x, y, count);
+        }
+        count++;
+        
+        binaryTree.add(node);
+        animation.getChildren().add(node.getStackPane());
+        
+
+    }
+    
+    public void removeTreeElements() {
+        
+        for (BinaryNode e : binaryTree) {
+            e.getStackPane().setTranslateY(9000);
+        }
+
+        System.gc();
+        binaryTree = new ArrayList<>();
+        
     }
 
     public void initialize(Stage stage) {
@@ -504,17 +525,17 @@ public class Main extends Application {
 
                 if (!binaryTreeOn && !running) {
 
-                    binaryTreeFp = new FlowPane();
-                    binaryTreeFp.setId("text-f");
-                    binaryTreeFp.setPrefWidth(200);
-                    binaryTreeFp.setPrefHeight(195);
-                    binaryTreeFp.setTranslateX(102);
-                    binaryTreeFp.setTranslateY(431);
+                    binaryTreeFlowPane = new FlowPane();
+                    binaryTreeFlowPane.setId("text-f");
+                    binaryTreeFlowPane.setPrefWidth(200);
+                    binaryTreeFlowPane.setPrefHeight(195);
+                    binaryTreeFlowPane.setTranslateX(102);
+                    binaryTreeFlowPane.setTranslateY(431);
                     Label lb = new Label("    Árvore Binária de Pesquisa:");
                     lb.setId("sort");
                     lb.setPrefWidth(200);
                     lb.setPrefHeight(40);
-                    binaryTreeFp.getChildren().add(lb);
+                    binaryTreeFlowPane.getChildren().add(lb);
 
                     Button search = new Button("Pesquisa");
                     search.setPrefWidth(200);
@@ -527,10 +548,7 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            
                             createNumberQuestion();
-//                            Platform.runLater(new InsertionThread(main, score));
-
                         }
                     });
 
@@ -544,7 +562,8 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            root.getChildren().remove(binaryTreeFp);
+                            removeTreeElements();
+                            root.getChildren().remove(binaryTreeFlowPane);
                             for (Node n : root.getChildren()) {
 
                                 n.setDisable(false);
@@ -554,20 +573,95 @@ public class Main extends Application {
                         }
                     });
 
-                    binaryTreeFp.getChildren().add(search);
-                    binaryTreeFp.getChildren().add(insertion);
-                    binaryTreeFp.getChildren().add(removal);
-                    binaryTreeFp.getChildren().add(back);
+                    binaryTreeFlowPane.getChildren().add(search);
+                    binaryTreeFlowPane.getChildren().add(insertion);
+                    binaryTreeFlowPane.getChildren().add(removal);
+                    binaryTreeFlowPane.getChildren().add(back);
 
-                    root.getChildren().add(binaryTreeFp);
+                    root.getChildren().add(binaryTreeFlowPane);
 
                     for (Node n : root.getChildren()) {
-                        if (n != binaryTreeFp && n == flowpane) {
+                        if (n != binaryTreeFlowPane && n == flowpane) {
                             n.setDisable(true);
                         }
                     }
 
                     binaryTreeOn = true;
+
+                }
+            }
+        });
+        
+        Button vectorButton = new Button("Vetor");
+        vectorButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                if (!vectorOn && !running) {
+
+                    vectorFlowPane = new FlowPane();
+                    vectorFlowPane.setId("text-f");
+                    vectorFlowPane.setPrefWidth(200);
+                    vectorFlowPane.setPrefHeight(195);
+                    vectorFlowPane.setTranslateX(102);
+                    vectorFlowPane.setTranslateY(431);
+                    Label lb = new Label("    Vetor:");
+                    lb.setId("sort");
+                    lb.setPrefWidth(200);
+                    lb.setPrefHeight(40);
+                    vectorFlowPane.getChildren().add(lb);
+
+                    Button initialize = new Button("Inicializar");
+                    initialize.setPrefWidth(200);
+                    initialize.setPrefHeight(37);
+                    Button insertion = new Button("Inserção");
+                    insertion.setPrefWidth(200);
+                    insertion.setPrefHeight(37);
+
+                    insertion.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            
+                        }
+                    });
+
+                    Button removal = new Button("Remoção");
+                    removal.setPrefWidth(200);
+                    removal.setPrefHeight(37);
+                    
+                    Button back = new Button("Voltar");
+                    back.setPrefWidth(200);
+                    back.setPrefHeight(37);
+                    back.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+//                            removeTreeElements();
+                            root.getChildren().remove(vectorFlowPane);
+                            for (Node n : root.getChildren()) {
+
+                                n.setDisable(false);
+
+                            }
+                            vectorOn = false;
+                        }
+                    });
+
+                    vectorFlowPane.getChildren().add(initialize);
+                    vectorFlowPane.getChildren().add(insertion);
+                    vectorFlowPane.getChildren().add(removal);
+                    vectorFlowPane.getChildren().add(back);
+
+                    root.getChildren().add(vectorFlowPane);
+
+                    for (Node n : root.getChildren()) {
+                        if (n != vectorFlowPane && n == flowpane) {
+                            n.setDisable(true);
+                        }
+                    }
+
+                    vectorOn = true;
 
                 }
             }
@@ -586,8 +680,8 @@ public class Main extends Application {
         button6.setPrefWidth(200);
         button7.setPrefWidth(200);
         button8.setPrefWidth(200);
-//        binaryTreeButton.setPrefWidth(200);
         binaryTreeButton.setPrefWidth(401);
+        vectorButton.setPrefWidth(401);
 
         flowpane = new FlowPane();
         flowpane.maxWidth(450);
@@ -619,7 +713,7 @@ public class Main extends Application {
         tilePane.getChildren().addAll(button,
                 button1, button2, button3, countingButton, button4);
 
-        tilePane1.getChildren().addAll(binaryTreeButton, button6, button7, button8);
+        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, button7, button8);
         flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
 
 
