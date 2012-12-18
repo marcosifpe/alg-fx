@@ -6,6 +6,8 @@ package model;
 
 import execution.Constants;
 import execution.Main;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -94,7 +96,7 @@ public class Question {
 
 
         }
-
+        
         return response;
 
     }

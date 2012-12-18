@@ -6,6 +6,7 @@ package model;
 
 import execution.Main;
 import java.text.DecimalFormat;
+import javafx.scene.layout.StackPane;
 
 /**
  *
@@ -33,7 +34,7 @@ public class Score {
     public void selectText(String code) {
         this.main.selectText(code);
     }
-    
+            
     public void createElements() {
         this.main.createElements();
     }
@@ -44,6 +45,23 @@ public class Score {
     
     public void createMainProgressBar() {
         this.main.createProgressBar();
+    }
+    
+    public void enableStackPane() {
+        this.main.getStackFlowPane().setDisable(false);
+    }
+    
+    public void disableStackPane() {
+        this.main.getStackFlowPane().setDisable(true);
+
+    }
+    
+    public void addStackPane(StackPane pane) {
+        this.main.getAnimation().getChildren().add(pane);
+    }
+    
+    public void stackElements(int number) {
+        this.main.testStackCreation(number);
     }
     
     public void fillSetProgressBar(double percentage) {

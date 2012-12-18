@@ -80,7 +80,7 @@ public class ModelThread extends Thread {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             i++;
@@ -101,7 +101,7 @@ public class ModelThread extends Thread {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             i++;
@@ -117,7 +117,7 @@ public class ModelThread extends Thread {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MovingThread.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             i++;
