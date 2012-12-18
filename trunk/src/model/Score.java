@@ -60,10 +60,6 @@ public class Score {
         this.main.getAnimation().getChildren().add(pane);
     }
     
-    public void stackElements(int number) {
-        this.main.testStackCreation(number);
-    }
-    
     public void fillSetProgressBar(double percentage) {
         
         main.getPointProgressBar().setProgress(percentage / 100.0);

@@ -18,21 +18,16 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.BinaryNode;
 import model.NodeElement;
 import model.Score;
 import model.StackElement;
-import threads.AuxiliaryThread;
-import threads.TreeThread;
 import threads.SortingThread;
 import threads.StackThread;
+import threads.TreeThread;
 
 /**
  *
@@ -254,45 +249,6 @@ public class Main extends Application {
         root.getChildren().add(questionPane);
         
     }
-    
-    public void testStackCreation(int number) {
-        double central = Y_POSITION + 110;
-        StackElement element = null;
-        
-        if (stack.isEmpty()) {
-                element = new StackElement(100, 50, Integer.toString(number),
-                        0, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65,
-                        central);
-            } else {
-                if (stack.size() < 3) {
-
-                    for (int i = 0; i < stack.size(); i++) {
-                        moveVertically(stack.get(i).getStackPane(), 70);
-                        
-                        try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    }
-                    
-                    
-
-                    element = new StackElement(100, 50, Integer.toString(number),
-                            0, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65,
-                            central);
-                } else {
-                    element = new StackElement(100, 50, Integer.toString(number),
-                            0, Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65,
-                            (Y_POSITION + (250) - (stack.size() * 70)));
-                }
-            }
-        
-        System.out.println("Element: " + element.getElement());
-        animation.getChildren().add(element.getStackPane());
-        stack.add(element);
-    }
 
     public FlowPane getStackFlowPane() {
         return stackFlowPane;
@@ -301,7 +257,6 @@ public class Main extends Application {
     public void setStackFlowPane(FlowPane stackFlowPane) {
         this.stackFlowPane = stackFlowPane;
     }
-    
     
     public void createStackNumberQuestion() {
         
@@ -472,19 +427,6 @@ public class Main extends Application {
         animation.getChildren().add(pane);
     }
     
-    public void moveVertically(StackPane pane, int quantity) {
-        
-        int i = 0;
-        
-        while (i != quantity) {
-            
-            pane.setTranslateY(pane.getTranslateY() + 1);
-            sleep(5);
-            i++;
-            
-        }
-        
-    }
     
     public void removeStackElements() {
         
