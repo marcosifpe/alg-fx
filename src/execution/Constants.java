@@ -5,8 +5,11 @@
 package execution;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import model.Question;
 
 /**
  *
@@ -15,6 +18,8 @@ import javafx.scene.media.MediaPlayer;
 public class Constants {
 
     public static String EVENT = " Eventos: ";
+    public static String LINE_BREAK = "\n\n ";
+    public static String UNAVAILABLE_EVENT = "Por enquanto, não há eventos nesta simulação.";
     public static String INVALID_NUMBER = " Número inválido! Tente novamente.";
     public static String VARIABLES = " Variáveis: " + "\n\n";
     public static String NO_CODE = " Pseudocódigo ainda não selecionado.";
@@ -119,7 +124,33 @@ public class Constants {
             + "    no.direita = insercao(elemento, no.direita);\n"
             + "}\n"
             + "retorne no";
-    
+    public static String STACK_PUSH = "        PILHA \t\t\n\n"
+            + "push(int numero) {\n"
+            + "  se (tamanho == capacidade) {\n"
+            + "    Erro: Não há capacidade para mais elementos!\n"
+            + "  } senao {\n"
+            + "    pilha[tamanho] = numero;\n"
+            + "    tamanho++;\n"
+            + "  }\n"
+            + "}\n\n";
+    public static String STACK_POP = "        PILHA \t\t\n\n"
+            + "pop() {\n"
+            + "  se(tamanho == 0) {\n"
+            + "    Erro: Não há elementos à serem retirados!\n"
+            + "  } senao  {\n"
+            + "    pilha[tamanho - 1] = null;\n"
+            + "    tamanho--;\n"
+            + "  }\n"
+            + "}\n\n";
+    public static String STACK_TOP = "        PILHA \t\t\n\n"
+            + "top() {\n"
+            + "  se (tamanho == 0) {\n"
+            + "    Erro: Não há elementos na pilha!\n"
+            + "  } senao   {\n"
+            + "    int top = pilha[tamanho - 1];\n"
+            + "  }\n"
+            + "  retorna top;\n"
+            + "}";
     public static String GUESS_RIGHT = "acerto.wav";
     public static String GUESS_WRONG = "falha.wav";
     public static boolean PLAY_SOUNDS = true;
@@ -145,6 +176,14 @@ public class Constants {
         mediaPlayer.play();
         
         }
+        
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Question.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
         
     }
 }
