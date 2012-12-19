@@ -32,6 +32,7 @@ public class StackThread extends Thread {
     private boolean answered = false;
     public static final int INSERTION = 1;
     public static final int REMOVAL = 2;
+    public static final int TOP = 3;
     public final int Y_POSITION = 150;
 
     public StackThread(Group animation, List<StackElement> list, Score score,
@@ -74,6 +75,10 @@ public class StackThread extends Thread {
                 
             }
             
+            Main.tf.setText(Constants.NO_CODE);
+            Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.NO_SIMULATION);
+            
         } finally {
             
             
@@ -113,7 +118,7 @@ public class StackThread extends Thread {
                 if (stack.size() < 3) {
 
                     for (StackElement stackElement1 : stack) {
-                        moveVertically(stackElement1.getStackPane(), 70);
+                        moveDownwards(stackElement1.getStackPane(), 70);
                         
                         try {
                             Thread.sleep(500);
@@ -171,16 +176,15 @@ public class StackThread extends Thread {
         
         this.score.selectText("  se(tamanho == 0) {\n");
         if (stack.isEmpty()) {
-            
-            Constants.playQuestionSound(1);
             this.score.selectText("    Erro: Não há elementos à serem retirados!\n");
+            Constants.playQuestionSound(1);
             this.score.selectText("");
             return;
         } else {
+            this.score.selectText("  } senao  {\n");
             
-            if (stack.size() < 4) {
-                
-                
+            this.score.selectText("    pilha[tamanho - 1] = null;\n");
+            if (stack.size() > 3) {    
                 //====ESCOLHER O ELEMENTO ===
                 
                 //==== FIM ====
@@ -207,16 +211,57 @@ public class StackThread extends Thread {
                         0);
                 stack.get(stack.size() - 1).getStackPane().setVisible(false);
                 
+                this.score.selectText("    tamanho--;\n");
                 stack.remove(stack.size() - 1);
-//                stack.get(stack.size() - 1).getStackPane();
+                
                 
             } else {
                 
+                StackElement s = stack.get(stack.size() - 1);
+                int cycle = 0;
+                do {
+                    s.getRectangle().setFill(Color.rgb(181, 97, 116));
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    s.getRectangle().setFill(Color.rgb(156, 216, 255));
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    cycle++;
+                } while (cycle != 5);
+                
+                moveToLocation(stack.get(stack.size() - 1).getStackPane(), 
+                        stack.get(stack.size() - 1).getStackPane().getTranslateX() - 150, 
+                        0);
+                stack.get(stack.size() - 1).getStackPane().setVisible(false);
+                
+                
+                stack.remove(stack.size() - 1);
+                
+                for (int i = stack.size() - 1; i >= 0; i--) {
+                    moveUpwards(stack.get(i).getStackPane(), 70);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                }
+                
+                this.score.selectText("    tamanho--;\n");
                 
                 
             }
             
         }
+        this.score.selectText("");
+        Main.variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                        + "tamanho = " + stack.size());
         
     }
 
@@ -252,7 +297,7 @@ public class StackThread extends Thread {
 
     }
 
-    public void moveVertically(StackPane pane, int quantity) {
+    public void moveDownwards(StackPane pane, int quantity) {
 
         int i = 0;
 
@@ -267,6 +312,26 @@ public class StackThread extends Thread {
             }
 
             i++;
+
+        }
+
+    }
+    
+    public void moveUpwards(StackPane pane, int quantity) {
+
+        int i = quantity;
+
+        while (i != 0) {
+
+            pane.setTranslateY(pane.getTranslateY() - 1);
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            i--;
 
         }
 

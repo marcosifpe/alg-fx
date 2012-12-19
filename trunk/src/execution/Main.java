@@ -333,6 +333,8 @@ public class Main extends Application {
                 root.getChildren().remove(questionPane);
                 stackFlowPane.setDisable(false);
                 events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+                
             }
         });
 
@@ -803,9 +805,28 @@ public class Main extends Application {
                     lb.setPrefHeight(40);
                     stackFlowPane.getChildren().add(lb);
 
-                    Button initialize = new Button("IsEmpty");
+                    Button initialize = new Button("Top");
                     initialize.setPrefWidth(200);
                     initialize.setPrefHeight(37);
+                    
+                    initialize.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            if (!running) {
+//                                running = true;
+//                                stackFlowPane.setDisable(true);
+//                                tf.setText(Constants.STACK_POP);
+//                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+//                                        + "tamanho = " + stack.size());
+//                                StackThread st = new StackThread(animation, stack, score,
+//                                        main, StackThread.REMOVAL, 0, null);
+//                                st.start();
+//                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                            }
+                        }
+                    });
+                    
                     Button insertion = new Button("Push");
                     insertion.setPrefWidth(200);
                     insertion.setPrefHeight(37);
@@ -872,10 +893,10 @@ public class Main extends Application {
                             }
                         }
                     });
-
-                    stackFlowPane.getChildren().add(initialize);
+                    
                     stackFlowPane.getChildren().add(insertion);
                     stackFlowPane.getChildren().add(removal);
+                    stackFlowPane.getChildren().add(initialize);
                     stackFlowPane.getChildren().add(back);
 
                     root.getChildren().add(stackFlowPane);
