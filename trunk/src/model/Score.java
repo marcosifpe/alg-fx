@@ -51,9 +51,24 @@ public class Score {
         this.main.getStackFlowPane().setDisable(false);
     }
     
+    public void enableQueuePane() {
+        this.main.getQueueFlowPane().setDisable(false);
+    }
+    
+    public void enableListPane() {
+        this.main.getListFlowPane().setDisable(false);
+    }
+    
     public void disableStackPane() {
         this.main.getStackFlowPane().setDisable(true);
-
+    }
+    
+    public void disableQueuePane() {
+        this.main.getQueueFlowPane().setDisable(true);
+    }
+    
+    public void disableListPane() {
+        this.main.getListFlowPane().setDisable(true);
     }
     
     public void addStackPane(StackPane pane) {
