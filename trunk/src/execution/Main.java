@@ -7,6 +7,8 @@ package execution;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,10 +22,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.*;
-import threads.QueueThread;
-import threads.SortingThread;
-import threads.StackThread;
-import threads.TreeThread;
+import threads.*;
 
 /**
  *
@@ -45,6 +44,8 @@ public class Main extends Application {
     private TextField numberField;
     private boolean decision = false;
     private int returningNumber = -2;
+    private int listPosition;
+    private int listNumber;
     private boolean binaryTreeOn = false;
     private boolean vectorOn = false;
     private boolean stackOn = false;
@@ -428,6 +429,178 @@ public class Main extends Application {
         root.getChildren().add(questionPane);
 
     }
+    
+    public void createListPositionQuestion() {
+        
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.INSERT_POSITION);
+
+        listFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual a posição destinada ao elemento?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Inserir");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+                        listPosition = number;
+
+                        ListElement le = new ListElement(40.0, Integer.toString(listNumber),
+                                1, 457, 100);
+                        le.getNext().setVisible(false);
+                        le.getPrevious().setVisible(false);
+                        le.getStackPane().setVisible(false);
+                        animation.getChildren().add(le.getStackPane());
+                        ListThread st = new ListThread(animation, list, score,
+                                main, ListThread.INSERTION, listNumber, le, listPosition);
+                        running = true;
+                        root.getChildren().remove(questionPane);
+                        st.start();
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                listFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+        
+    }
+    
+    public void createListNumberQuestion() {
+
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.TREE_INSERTION);
+
+        listFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual o elemento que deseja inserir?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Próximo");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+                        listNumber = number;
+                        root.getChildren().remove(questionPane);
+                        
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+//                        tf.setText(Constants.NO_CODE);
+                        createListPositionQuestion();
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                listFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+
+    }
 
     public void removeQuestion() {
         root.getChildren().remove(questionPane);
@@ -538,6 +711,20 @@ public class Main extends Application {
 
             System.gc();
             queue = new ArrayList<>();
+
+        }
+
+    }
+    
+    public void removeListElements() {
+
+        if (!list.isEmpty()) {
+            for (ListElement e : list) {
+                e.getStackPane().setTranslateY(9000);
+            }
+
+            System.gc();
+            list = new ArrayList<>();
 
         }
 
@@ -1123,12 +1310,7 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            ListElement l = new ListElement
-                                    (40.0, "25", 0, 
-                                    Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65, 
-                                    Y_POSITION + 110);
-                            
-                            animation.getChildren().add(l.getStackPane());
+                            createListNumberQuestion();
                         }
                     });
 
@@ -1143,7 +1325,13 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-//                            removeTreeElements();
+                            Main.tf.setText(Constants.NO_CODE);
+                            Main.variables.setText(Constants.VARIABLES
+                                    + Constants.NO_VARIABLES);
+                            Main.events.setText(Constants.EVENT
+                                    + Constants.LINE_BREAK
+                                    + Constants.NO_SIMULATION);
+                            removeListElements();
                             root.getChildren().remove(listFlowPane);
                             for (Node n : root.getChildren()) {
 

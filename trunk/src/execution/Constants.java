@@ -19,6 +19,8 @@ public class Constants {
 
     public static String EVENT = " Eventos: ";
     public static String LINE_BREAK = "\n\n ";
+    public static String INSERT_POSITION = "Escolha o índice (posição) o qual "
+            + "será inserido o elemento.";
     public static String UNAVAILABLE_EVENT = "Por enquanto, não há eventos nesta simulação.";
     public static String INVALID_NUMBER = " Número inválido! Tente novamente.";
     public static String VARIABLES = " Variáveis: " + "\n\n";
@@ -176,6 +178,44 @@ public class Constants {
             + "  } senao   {\n"
             + "  retorna fila[0];\n"
             + "  }\n"
+            + "}";
+    public static String LIST_INSERT = "        LISTA \t\t\n\n"
+            + "Inserir Elemento(int indice, int valor) {\n"
+            + "  se (indice < 0 || indice > tamanho_lista) {\n"
+            + "    Erro: Indice fora da lista!\n"
+            + "  }\n"
+            + "  se (head == tail) {\n"
+            + "    head.setProximo(novo No(valor, head, tail));\n"
+            + "    tail.setAnterior(head.proximo);\n"
+            + "  } senao {\n"
+            + "    No elemento = head;\n"
+            + "    para (int i = 0; i < indice; i++) {\n"
+            + "      elemento = elemento.getProximo();\n"
+            + "    }\n"
+            + "    No elemento2 = elemento.getProximo();\n"
+            + "    elemento.setProximo(novo No(valor, elemento.getProximo(), elemento);\n"
+            + "    elemento2.setAnterior(elemento.getProximo());\n"
+            + "  }\n"
+            + "  tamanho_lista++;\n"
+            + "}";
+    public static String LIST_REMOVE = "        LISTA \t\t\n\n"
+            + "Remover Elemento(int indice) {\n"
+            + "  No elemento = head;\n"
+            + "  se (indice > 0 || indice > tamanho_vetor - 1) {\n"
+            + "    Erro: Indice fora da lista!\n"
+            + "  }\n"
+            + "  se (indice == 0) {\n"
+            + "    elemento = head.getProximo();\n"
+            + "    head.getProximo().getProximo().setAnterior(head);\n"
+            + "    head.setProximo(head.getProximo().getProximo());\n"
+            + "  } senao {\n"
+            + "    para (int i = 0; i < indice; i++) {\n"
+            + "      elemento = elemento.getProximo();\n"
+            + "    }\n"
+            + "    elemento.getProximo().getProximo().setAnterior(elemento);\n"
+            + "    elemento.setProximo(elemento.getProximo().getProximo());\n"
+            + "  }\n"
+            + "  tamanho_lista--;\n"
             + "}";
     public static String GUESS_RIGHT = "acerto.wav";
     public static String GUESS_WRONG = "falha.wav";
