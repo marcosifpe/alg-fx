@@ -47,6 +47,10 @@ public class Score {
         this.main.createProgressBar();
     }
     
+    public void enableVectorPane() {
+        this.main.getVectorFlowPane().setDisable(false);
+    }
+    
     public void enableStackPane() {
         this.main.getStackFlowPane().setDisable(false);
     }
@@ -57,6 +61,10 @@ public class Score {
     
     public void enableListPane() {
         this.main.getListFlowPane().setDisable(false);
+    }
+    
+    public void disableVectorPane() {
+        this.main.getVectorFlowPane().setDisable(true);
     }
     
     public void disableStackPane() {

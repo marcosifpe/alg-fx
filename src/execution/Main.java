@@ -55,6 +55,9 @@ public class Main extends Application {
     private List<StackElement> stack;
     private List<QueueElement> queue;
     private List<ListElement> list;
+    private List<VectorElement> vector;
+    private List<NodeElement> vectorElements;
+    private int actualCapacity;
     private boolean hitButton = false;
     private final int MAX_TREE_HEIGHT = 4;
     private final int NODES_LENGHT = 4;
@@ -70,6 +73,7 @@ public class Main extends Application {
     public static TextArea tf;
     public static int chosenElements = 0;
     public static int numberSet = -1;
+    public static int vectorCapacity = 2;
     private final Interpolator interpolator = Interpolator.LINEAR;
     private FlowPane pane1 = new FlowPane();
 
@@ -517,6 +521,178 @@ public class Main extends Application {
         
     }
     
+    public void createVectorPositionQuestion() {
+        
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.INSERT_POSITION);
+
+        vectorFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual a posição destinada ao elemento?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Inserir");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+                        listPosition = number;
+                        
+                        NodeElement element = new NodeElement(30.0, 
+                                Integer.toString(listNumber), 
+                                0, 457, 100);
+                        
+                        element.getStackPane().setVisible(false);
+                        animation.getChildren().add(element.getStackPane());
+                        actualCapacity = vector.size();
+                        
+                        VectorThread vt = new VectorThread(animation, 
+                                vector, score, main, VectorThread.INSERTION, 
+                                number, element, listPosition, actualCapacity);
+                        running = true;
+                        root.getChildren().remove(questionPane);
+                        vt.start();
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                vectorFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+        
+    }
+    
+    public void createListPositionRemovalQuestion() {
+        
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.REMOVE_POSITION);
+
+        listFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual a posição destinada à remoção?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Remover");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+                        listPosition = number;
+                        
+                        ListThread st = new ListThread(animation, list, score,
+                                main, ListThread.REMOVAL, 0, null, listPosition);
+                        running = true;
+                        root.getChildren().remove(questionPane);
+                        st.start();
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                listFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+            }
+            
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+        
+    }
+    
     public void createListNumberQuestion() {
 
         events.setText(Constants.EVENT + "\n\n"
@@ -601,6 +777,90 @@ public class Main extends Application {
         root.getChildren().add(questionPane);
 
     }
+    
+    public void createVectorNumberQuestion() {
+
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.TREE_INSERTION);
+
+        vectorFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual o elemento que deseja inserir?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Próximo");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+                        listNumber = number;
+                        root.getChildren().remove(questionPane);
+                        
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                        createVectorPositionQuestion();
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                vectorFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+
+    }
 
     public void removeQuestion() {
         root.getChildren().remove(questionPane);
@@ -648,6 +908,30 @@ public class Main extends Application {
         nodes = new NodeElement[NODES_LENGHT];
 
     }
+    
+    public void removeVector() {
+        
+        for (VectorElement e : vector) {
+            e.getStackPane().setTranslateY(9000);
+        }
+        
+        System.gc();
+        
+        vectorCapacity = 2;
+        vector = new ArrayList<>(8);
+        for (int i = 0; i < 8; i++) {
+            vector.add(new VectorElement(80.0, 80.0, "0", 0, 
+                    Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65
+                    - 300 + (vector.size() * 90), Y_POSITION + 110, null));
+            
+            if(i > 1) {
+                vector.get(i).getStackPane().setVisible(false);
+            }
+            
+        }
+        
+    }
+    
     public int count = 0;
 
     public void createTreeElement(int number, double x, double y) {
@@ -722,12 +1006,10 @@ public class Main extends Application {
             for (ListElement e : list) {
                 e.getStackPane().setTranslateY(9000);
             }
-
             System.gc();
             list = new ArrayList<>();
-
         }
-
+        
     }
 
     public void initialize(Stage stage) {
@@ -736,6 +1018,17 @@ public class Main extends Application {
         stack = new ArrayList<>();
         queue = new ArrayList<>();
         list = new ArrayList<>();
+        vector = new ArrayList<>(8);
+        for (int i = 0; i < 8; i++) {
+            vector.add(new VectorElement(80.0, 80.0, "0", 0, 
+                    Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65
+                    - 300 + (vector.size() * 90), Y_POSITION + 110, null));
+            
+            if(i > 1) {
+                vector.get(i).getStackPane().setVisible(false);
+            }
+            
+        }
 
         main = this;
 
@@ -957,6 +1250,11 @@ public class Main extends Application {
             @Override
             public void handle(ActionEvent t) {
                 if (!vectorOn && !running) {
+                    
+                    for (VectorElement element : vector) {
+                        animation.getChildren().addAll(element.getStackPane());
+                    }
+                    
 
                     vectorFlowPane = new FlowPane();
                     vectorFlowPane.setId("text-f");
@@ -981,6 +1279,7 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
+                            createVectorNumberQuestion();
                         }
                     });
 
@@ -995,13 +1294,23 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            root.getChildren().remove(vectorFlowPane);
-                            for (Node n : root.getChildren()) {
+                            if (!running) {
+                                Main.tf.setText(Constants.NO_CODE);
+                                Main.variables.setText(Constants.VARIABLES
+                                        + Constants.NO_VARIABLES);
+                                Main.events.setText(Constants.EVENT
+                                        + Constants.LINE_BREAK
+                                        + Constants.NO_SIMULATION);
+                                removeVector();
+                                root.getChildren().remove(vectorFlowPane);
+                                for (Node n : root.getChildren()) {
 
-                                n.setDisable(false);
+                                    n.setDisable(false);
 
+                                }
+                                vectorOn = false;
                             }
-                            vectorOn = false;
+                            
                         }
                     });
 
@@ -1317,6 +1626,19 @@ public class Main extends Application {
                     Button removal = new Button("Remover");
                     removal.setPrefWidth(200);
                     removal.setPrefHeight(37);
+                    
+                    removal.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            if (!running) {
+                                tf.setText(Constants.LIST_REMOVE);
+                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                                        + "tamanho = " + list.size());
+                                createListPositionRemovalQuestion();
+                            }
+                        }
+                    });
 
                     Button back = new Button("Voltar");
                     back.setPrefWidth(200);
@@ -1609,6 +1931,30 @@ public class Main extends Application {
 
     public void setQueue(List<QueueElement> queue) {
         this.queue = queue;
+    }
+
+    public List<ListElement> getList() {
+        return list;
+    }
+
+    public void setList(List<ListElement> list) {
+        this.list = list;
+    }
+
+    public List<VectorElement> getVector() {
+        return vector;
+    }
+
+    public void setVector(List<VectorElement> vector) {
+        this.vector = vector;
+    }
+
+    public List<NodeElement> getVectorElements() {
+        return vectorElements;
+    }
+
+    public void setVectorElements(List<NodeElement> vectorElements) {
+        this.vectorElements = vectorElements;
     }
     
 }

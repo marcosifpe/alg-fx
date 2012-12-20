@@ -25,14 +25,12 @@ public class ListElement {
     private String element;
     private StackPane next;
     private StackPane previous;
-//    private  nextRectangle;
     private EventHandler eventHandler;
     private int color;
     private double x, y;
     private double circleRadius;
     
-    public ListElement() {
-    }
+    public ListElement() {}
 
     public ListElement(double radius, String element, int operation, double x, double y) {
 //        EventHandler eventHandler1 = generateEventHandler(operation);
@@ -82,23 +80,13 @@ public class ListElement {
         rectangle.setEffect(new InnerShadow());
         rectangle.setTranslateX(rectangle.getTranslateX() - (r));
         rectangle.setTranslateY(rectangle.getTranslateY() + (r / 2));
-//        rectangle.setLayoutX(posX - (r / 2));
-//        rectangle.setLayoutY(posY + (r / 2));
-        //PREVIOUS
+        
         Polygon triangle = new Polygon(
                 new double[] {
                     30 , 35 ,
                     10 , 45 ,
                     30 , 55 
                 });
-        /* NEXT  */
-//        Polygon triangle = new Polygon(
-//                new double[] {
-//                    35 , 30 ,
-//                    35 , 10,
-//                    55 , 20 
-//                }); 
-         /**/
         triangle.setTranslateX(rectangle.getTranslateX() - (r - 5) );
         triangle.setTranslateY(triangle.getTranslateY() + (r / 2));
         triangle.setFill(Color.rgb(156, 216, 255));
