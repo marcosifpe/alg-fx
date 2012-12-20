@@ -7,6 +7,7 @@ package threads;
 import execution.Constants;
 import execution.Main;
 import java.awt.Toolkit;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +59,13 @@ public class ListThread extends Thread {
     }
 
     public void execute() {
-
+        
+//        try {
+//            Runtime.getRuntime().exec( "cmd /c cls" ) ; 
+//        } catch (IOException ex) {
+//            Logger.getLogger(ListThread.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        
         this.score.disableListPane();
 
         try {
@@ -86,7 +93,7 @@ public class ListThread extends Thread {
         double central = Y_POSITION + 110;
         double x, y;
 
-        if (position > list.size()) {
+        if (position > list.size() || list.size() == LIST_CAPACITY) {
             //POSICAO INVÁLIDA.
             return;
 
@@ -95,13 +102,6 @@ public class ListThread extends Thread {
             if (position < list.size()) {
                 for (int i = list.size() - 1; i >= position; i--) {
                     moveRight(list.get(i).getStackPane(), 118);
-                    
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(ListThread.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
-                    
                 }
             }
             
@@ -135,11 +135,12 @@ public class ListThread extends Thread {
             
             for (int i = 0; i < list.size(); i++) {
                 
+                try {
+                
                 if (i == 0) {
                     
                     list.get(i).getPrevious().setVisible(false);
                     
-//                    if (list.get(i + 1) == null) {
                     if (i + 1 > list.size()) {
                         list.get(i).getNext().setVisible(false);
                     }
@@ -166,37 +167,14 @@ public class ListThread extends Thread {
                     list.get(i).getNext().setVisible(false);
                 }
                 
+                } catch (IndexOutOfBoundsException ex) { 
+                    hideLeft = true;
+                    hideRight = true;
+                }
+                
             }
             
         }
-//            for (int i = 0; i < Main.vetorNumeros.length; i++) {
-//
-//                if (Main.vetorNumeros[i] == null) {
-//                    continue;
-//                }
-//
-//                if (i == 0) {
-//                    Main.vetorNumeros[i].hideLeft();
-//                    if (Main.vetorNumeros[i + 1] == null) {
-//                        Main.vetorNumeros[i].hideRight();
-//                    }
-//                    if (i == 0 && Main.vetorNumeros[i + 1] != null) {
-//                        Main.vetorNumeros[i].showRight(elementPosition.y + 0.1f);
-//                    }
-//                } else if (i + 1 <= Main.vetorNumeros.length - 1) {
-//                    if (Main.vetorNumeros[i + 1] == null) {
-//                        Main.vetorNumeros[i].hideRight();
-//                        Main.vetorNumeros[i].showLeft(elementPosition.y + 0.1f);
-//                    } else {
-//                        Main.vetorNumeros[i].showLeft(elementPosition.y + 0.1f);
-//                        Main.vetorNumeros[i].showRight(elementPosition.y - 0.1f);
-//                    }
-//                } else {
-//                    Main.vetorNumeros[i].showLeft(elementPosition.y + 0.1f);
-//                    Main.vetorNumeros[i].showRight(elementPosition.y - 0.1f);
-//                }
-//
-//            }
 
     }
 
