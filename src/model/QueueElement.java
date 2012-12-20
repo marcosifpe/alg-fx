@@ -19,7 +19,7 @@ import javax.swing.JOptionPane;
  *
  * @author rafael
  */
-public class StackElement {
+public class QueueElement {
     
     private StackPane stackPane;
     private Rectangle rectangle;
@@ -28,10 +28,10 @@ public class StackElement {
     private int color;
     private double x, y;
     private double width, height;
+    
+    public QueueElement() {}
 
-    public StackElement() {}
-
-    public StackElement(double width, double height, String element, int operation, 
+    public QueueElement(double width, double height, String element, int operation, 
             double x, double y) {
 //        EventHandler eventHandler1 = generateEventHandler(operation);
         this.width = width;
@@ -99,7 +99,7 @@ public class StackElement {
 
         return eventHandler1;
     }
-
+    
     public int getColor() {
         return color;
     }
@@ -108,12 +108,20 @@ public class StackElement {
         this.color = color;
     }
 
-    public StackPane getStackPane() {
-        return stackPane;
+    public String getElement() {
+        return element;
     }
 
-    public void setStackPane(StackPane stackPane) {
-        this.stackPane = stackPane;
+    public void setElement(String element) {
+        this.element = element;
+    }
+
+    public EventHandler getEventHandler() {
+        return eventHandler;
+    }
+
+    public void setEventHandler(EventHandler eventHandler) {
+        this.eventHandler = eventHandler;
     }
 
     public double getHeight() {
@@ -132,36 +140,20 @@ public class StackElement {
         this.rectangle = rectangle;
     }
 
+    public StackPane getStackPane() {
+        return stackPane;
+    }
+
+    public void setStackPane(StackPane stackPane) {
+        this.stackPane = stackPane;
+    }
+
     public double getWidth() {
         return width;
     }
 
     public void setWidth(double width) {
         this.width = width;
-    }
-
-    public String getElement() {
-        return element;
-    }
-
-    public void setElement(String element) {
-        this.element = element;
-    }
-
-    public int getElementAsInt() {
-        return Integer.parseInt(element);
-    }
-
-    public void setElementAsInt(int element) {
-        this.element = Integer.toString(element);
-    }
-
-    public EventHandler getEventHandler() {
-        return eventHandler;
-    }
-
-    public void setEventHandler(EventHandler eventHandler) {
-        this.eventHandler = eventHandler;
     }
 
     public double getX() {
@@ -179,5 +171,5 @@ public class StackElement {
     public void setY(double y) {
         this.y = y;
     }
-
+    
 }

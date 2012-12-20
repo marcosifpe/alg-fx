@@ -151,6 +151,32 @@ public class Constants {
             + "  }\n"
             + "  retorna top;\n"
             + "}";
+    public static String QUEUE_ENQUEUE = "        FILA \t\t\n\n"
+            + "Inserir Elemento(int numero) {\n"
+            + "  se (tamanho == capacidade) {\n"
+            + "    Erro: Não há capacidade para mais elementos!\n"
+            + "  } senao {\n"
+            + "    fila[tamanho] = numero;\n"
+            + "    tamanho++;\n"
+            + "  }\n"
+            + "}\n\n";
+    public static String QUEUE_DEQUEUE = "        FILA \t\t\n\n"
+            + "Remover Elemento() {\n"
+            + "  se(tamanho == 0) {\n"
+            + "    Erro: Não há elementos à serem retirados!\n"
+            + "  } senao  {\n"
+            + "    fila[0] = null;\n"
+            + "    tamanho--;\n"
+            + "  }\n"
+            + "}\n\n";
+    public static String QUEUE_FRONT = "        FILA \t\t\n\n"
+            + "Front() {\n"
+            + "  se (tamanho == 0) {\n"
+            + "    Erro: Não há elementos na fila!\n"
+            + "  } senao   {\n"
+            + "  retorna fila[0];\n"
+            + "  }\n"
+            + "}";
     public static String GUESS_RIGHT = "acerto.wav";
     public static String GUESS_WRONG = "falha.wav";
     public static boolean PLAY_SOUNDS = true;

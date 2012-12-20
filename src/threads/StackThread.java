@@ -30,6 +30,7 @@ public class StackThread extends Thread {
     private int number;
     private Group animation;
     private boolean answered = false;
+    public final int STACK_CAPACITY = 5;
     public static final int INSERTION = 1;
     public static final int REMOVAL = 2;
     public static final int TOP = 3;
@@ -60,7 +61,7 @@ public class StackThread extends Thread {
                 Main.tf.setText(Constants.STACK_PUSH);
                 Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
                         + Constants.UNAVAILABLE_EVENT);
-                Main.variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + STACK_CAPACITY + "    "
                         + "tamanho = " + stack.size());
                 
                 pushElement(number);
@@ -69,10 +70,17 @@ public class StackThread extends Thread {
                 Main.tf.setText(Constants.STACK_POP);
                 Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
                         + Constants.UNAVAILABLE_EVENT);
-                Main.variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + STACK_CAPACITY + "    "
                         + "tamanho = " + stack.size());
                 popElement();
                 
+            } else if (operation == TOP) {
+                Main.tf.setText(Constants.STACK_TOP);
+                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + STACK_CAPACITY + "    "
+                        + "tamanho = " + stack.size());
+                top();
             }
             
             Main.tf.setText(Constants.NO_CODE);
@@ -96,10 +104,10 @@ public class StackThread extends Thread {
 
         this.main.selectText("  se (tamanho == capacidade) {\n");
 
-        if (stack.size() == 5) {
-
-            Constants.playQuestionSound(1);
+        if (stack.size() == STACK_CAPACITY) {
+            
             this.score.selectText("    Erro: Não há capacidade para mais elementos!\n");
+            Constants.playQuestionSound(1);
             this.score.selectText("");
             return;
 
@@ -163,7 +171,7 @@ public class StackThread extends Thread {
                     x - stackElement.getX(), y - stackElement.getY());
             
             this.score.selectText("    tamanho++;\n");
-            Main.variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+            Main.variables.setText(Constants.VARIABLES + "capacidade = " + STACK_CAPACITY + "    "
                     + "tamanho = " + stack.size());
             this.score.selectText("");
             
@@ -260,8 +268,48 @@ public class StackThread extends Thread {
             
         }
         this.score.selectText("");
-        Main.variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+        Main.variables.setText(Constants.VARIABLES + "capacidade = " + STACK_CAPACITY + "    "
                         + "tamanho = " + stack.size());
+        
+    }
+    
+    public void top() {
+        
+        Main.tf.setText(Constants.STACK_TOP);
+        
+        this.score.selectText("  se (tamanho == 0) {\n");
+        
+        if (stack.isEmpty()) {
+            this.score.selectText("    Erro: Não há elementos na pilha!\n");
+            Constants.playQuestionSound(1);
+            this.score.selectText("");
+            return;
+        } else {
+            this.score.selectText("  } senao   {\n");
+            
+            this.score.selectText("    int top = pilha[tamanho - 1];\n");
+                
+            StackElement s = stack.get(stack.size() - 1);
+            int cycle = 0;
+            do {
+                s.getRectangle().setFill(Color.rgb(181, 97, 116));
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                s.getRectangle().setFill(Color.rgb(156, 216, 255));
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                cycle++;
+            } while (cycle != 5);
+            
+            this.score.selectText("  retorna top;\n");
+        }
+        
         
     }
 

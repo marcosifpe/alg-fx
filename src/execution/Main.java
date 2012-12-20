@@ -7,8 +7,6 @@ package execution;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -21,10 +19,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.BinaryNode;
-import model.NodeElement;
-import model.Score;
-import model.StackElement;
+import model.*;
+import threads.QueueThread;
 import threads.SortingThread;
 import threads.StackThread;
 import threads.TreeThread;
@@ -56,6 +52,8 @@ public class Main extends Application {
     private boolean queueOn = false;
     private List<BinaryNode> binaryTree;
     private List<StackElement> stack;
+    private List<QueueElement> queue;
+    private List<ListElement> list;
     private boolean hitButton = false;
     private final int MAX_TREE_HEIGHT = 4;
     private final int NODES_LENGHT = 4;
@@ -72,6 +70,7 @@ public class Main extends Application {
     public static int chosenElements = 0;
     public static int numberSet = -1;
     private final Interpolator interpolator = Interpolator.LINEAR;
+    private FlowPane pane1 = new FlowPane();
 
     public static void main(String[] args) {
         launch(args);
@@ -79,6 +78,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        pane1.prefHeightProperty().bind(stage.heightProperty());
+        pane1.prefWidthProperty().bind(stage.widthProperty());
         initialize(stage);
         stage.show();
     }
@@ -174,12 +175,12 @@ public class Main extends Application {
     public void setReturningNumber(int returningNumber) {
         this.returningNumber = returningNumber;
     }
-    
+
     public void createNumberQuestion() {
-        
+
         events.setText(Constants.EVENT + "\n\n"
-                    + Constants.TREE_INSERTION);
-        
+                + Constants.TREE_INSERTION);
+
         binaryTreeFlowPane.setDisable(true);
 
         returningNumber = -2;
@@ -216,9 +217,9 @@ public class Main extends Application {
 
                 try {
                     if (Integer.parseInt(numberField.getText()) != -1) {
-                        
+
                         int number = Integer.parseInt(numberField.getText());
-                        
+
                         TreeThread tt = new TreeThread(number, main, score, TreeThread.INSERTION);
                         running = true;
                         Platform.runLater(tt);
@@ -247,7 +248,7 @@ public class Main extends Application {
 
         questionPane.getChildren().addAll(question, numberField, insert, cancel);
         root.getChildren().add(questionPane);
-        
+
     }
 
     public FlowPane getStackFlowPane() {
@@ -257,12 +258,12 @@ public class Main extends Application {
     public void setStackFlowPane(FlowPane stackFlowPane) {
         this.stackFlowPane = stackFlowPane;
     }
-    
+
     public void createStackNumberQuestion() {
-        
+
         events.setText(Constants.EVENT + "\n\n"
-                    + Constants.TREE_INSERTION);
-        
+                + Constants.TREE_INSERTION);
+
         stackFlowPane.setDisable(true);
 
         returningNumber = -2;
@@ -299,15 +300,15 @@ public class Main extends Application {
 
                 try {
                     if (Integer.parseInt(numberField.getText()) != -1) {
-                        
+
                         int number = Integer.parseInt(numberField.getText());
-                        
-                        StackElement se = new StackElement(100, 50, Integer.toString(number), 
+
+                        StackElement se = new StackElement(100, 50, Integer.toString(number),
                                 1, 457, 100);
-                        
+
                         se.getStackPane().setVisible(false);
                         animation.getChildren().add(se.getStackPane());
-                        StackThread st = new StackThread(animation, stack, score, 
+                        StackThread st = new StackThread(animation, stack, score,
                                 main, StackThread.INSERTION, number, se);
                         running = true;
                         root.getChildren().remove(questionPane);
@@ -334,15 +335,100 @@ public class Main extends Application {
                 stackFlowPane.setDisable(false);
                 events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
                 tf.setText(Constants.NO_CODE);
-                
+
             }
         });
 
         questionPane.getChildren().addAll(question, numberField, insert, cancel);
         root.getChildren().add(questionPane);
-        
+
     }
-    
+
+    public void createQueueNumberQuestion() {
+
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.TREE_INSERTION);
+
+        queueFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual o elemento que deseja inserir?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Inserir");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+
+                        QueueElement qe = new QueueElement(50, 100, Integer.toString(number),
+                                1, 457, 100);
+
+                        qe.getStackPane().setVisible(false);
+                        animation.getChildren().add(qe.getStackPane());
+                        QueueThread st = new QueueThread(animation, queue, score,
+                                main, QueueThread.ENQUEUE, number, qe);
+                        running = true;
+                        root.getChildren().remove(questionPane);
+                        st.start();
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                queueFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+
+    }
+
     public void removeQuestion() {
         root.getChildren().remove(questionPane);
         binaryTreeFlowPane.setDisable(false);
@@ -378,7 +464,7 @@ public class Main extends Application {
 
 
     }
-    
+
     public void removeElements() {
 
         for (NodeElement e : nodes) {
@@ -389,12 +475,12 @@ public class Main extends Application {
         nodes = new NodeElement[NODES_LENGHT];
 
     }
-    
     public int count = 0;
+
     public void createTreeElement(int number, double x, double y) {
 
         BinaryNode node;
-        
+
         if (binaryTree.isEmpty()) {
             node = new BinaryNode(BinaryNode.ROOT, 30.0, Integer.toString(number),
                     x, y, count);
@@ -403,35 +489,34 @@ public class Main extends Application {
                     x, y, count);
         }
         count++;
-        
+
         binaryTree.add(node);
         animation.getChildren().add(node.getStackPane());
-        
+
 
     }
-    
+
     public void removeTreeElements() {
-        
+
         for (BinaryNode e : binaryTree) {
             e.getStackPane().setTranslateY(9000);
         }
 
         System.gc();
         binaryTree = new ArrayList<>();
-        
+
     }
-    
+
     public void animationStackElement(StackPane pane) {
         animation.getChildren().add(pane);
     }
-    
+
     public void addToAnimation(StackPane pane) {
         animation.getChildren().add(pane);
     }
-    
-    
+
     public void removeStackElements() {
-        
+
         if (!stack.isEmpty()) {
             for (StackElement e : stack) {
                 e.getStackPane().setTranslateY(9000);
@@ -441,14 +526,30 @@ public class Main extends Application {
             stack = new ArrayList<>();
 
         }
-        
+
     }
-    
+
+    public void removeQueueElements() {
+
+        if (!queue.isEmpty()) {
+            for (QueueElement e : queue) {
+                e.getStackPane().setTranslateY(9000);
+            }
+
+            System.gc();
+            queue = new ArrayList<>();
+
+        }
+
+    }
+
     public void initialize(Stage stage) {
 
         initializeTreeElement();
         stack = new ArrayList<>();
-        
+        queue = new ArrayList<>();
+        list = new ArrayList<>();
+
         main = this;
 
         fp = new FlowPane();
@@ -578,54 +679,6 @@ public class Main extends Application {
             }
         });
 
-        Button button5 = new Button("Generate all");
-        button5.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent t) {
-                if (!running) {
-                    elementGeneration();
-                }
-            }
-        });
-
-        Button button6 = new Button("CreateProgressBar");
-        button6.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent t) {
-                if (!running) {
-                    score.createMainProgressBar();
-                }
-            }
-        });
-
-        Button button7 = new Button("FillProgressBar");
-        button7.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent t) {
-                if (!running && pointProgressBar != null) {
-                    score.fillProgressBar(0.1);
-                }
-            }
-        });
-        Button button8 = new Button("SelectText");
-        button8.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent t) {
-
-                tf.requestFocus();
-                String s = tf.getText();
-                int i = s.indexOf("as");
-                tf.positionCaret(i);
-                tf.selectEnd();
-                System.out.println(tf.getSelectedText());
-
-            }
-        });
-        
         Button countingButton = new Button("Counting Sort");
         countingButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -710,7 +763,7 @@ public class Main extends Application {
                 }
             }
         });
-        
+
         Button vectorButton = new Button("Vetor");
         vectorButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -741,14 +794,13 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            
                         }
                     });
 
                     Button removal = new Button("Remoção");
                     removal.setPrefWidth(200);
                     removal.setPrefHeight(37);
-                    
+
                     Button back = new Button("Voltar");
                     back.setPrefWidth(200);
                     back.setPrefHeight(37);
@@ -756,7 +808,6 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-//                            removeTreeElements();
                             root.getChildren().remove(vectorFlowPane);
                             for (Node n : root.getChildren()) {
 
@@ -785,13 +836,13 @@ public class Main extends Application {
                 }
             }
         });
-        
+
         Button stackButton = new Button("Pilha");
         stackButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent t) {
-              if (!stackOn && !running) {
+                if (!stackOn && !running) {
 
                     stackFlowPane = new FlowPane();
                     stackFlowPane.setId("text-f");
@@ -808,25 +859,25 @@ public class Main extends Application {
                     Button initialize = new Button("Top");
                     initialize.setPrefWidth(200);
                     initialize.setPrefHeight(37);
-                    
+
                     initialize.setOnAction(new EventHandler<ActionEvent>() {
 
                         @Override
                         public void handle(ActionEvent t) {
                             if (!running) {
-//                                running = true;
-//                                stackFlowPane.setDisable(true);
-//                                tf.setText(Constants.STACK_POP);
-//                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
-//                                        + "tamanho = " + stack.size());
-//                                StackThread st = new StackThread(animation, stack, score,
-//                                        main, StackThread.REMOVAL, 0, null);
-//                                st.start();
-//                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                                running = true;
+                                stackFlowPane.setDisable(true);
+                                tf.setText(Constants.STACK_TOP);
+                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                                        + "tamanho = " + stack.size());
+                                StackThread st = new StackThread(animation, stack, score,
+                                        main, StackThread.TOP, 0, null);
+                                st.start();
+                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
                             }
                         }
                     });
-                    
+
                     Button insertion = new Button("Push");
                     insertion.setPrefWidth(200);
                     insertion.setPrefHeight(37);
@@ -847,13 +898,13 @@ public class Main extends Application {
                     Button removal = new Button("Pop");
                     removal.setPrefWidth(200);
                     removal.setPrefHeight(37);
-                    
+
                     removal.setOnAction(new EventHandler<ActionEvent>() {
 
                         @Override
                         public void handle(ActionEvent t) {
                             if (!running) {
-                                
+
                                 running = true;
                                 stackFlowPane.setDisable(true);
                                 tf.setText(Constants.STACK_POP);
@@ -863,11 +914,11 @@ public class Main extends Application {
                                         main, StackThread.REMOVAL, 0, null);
                                 st.start();
                                 events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
-                                
+
                             }
                         }
                     });
-                    
+
                     Button back = new Button("Voltar");
                     back.setPrefWidth(200);
                     back.setPrefHeight(37);
@@ -875,25 +926,25 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            if(!running) {
-                            Main.tf.setText(Constants.NO_CODE);
-                            Main.variables.setText(Constants.VARIABLES + 
-                                    Constants.NO_VARIABLES);
-                            Main.events.setText(Constants.EVENT + 
-                                    Constants.LINE_BREAK +
-                                    Constants.NO_SIMULATION);
-                            removeStackElements();
-                            root.getChildren().remove(stackFlowPane);
-                            for (Node n : root.getChildren()) {
+                            if (!running) {
+                                Main.tf.setText(Constants.NO_CODE);
+                                Main.variables.setText(Constants.VARIABLES
+                                        + Constants.NO_VARIABLES);
+                                Main.events.setText(Constants.EVENT
+                                        + Constants.LINE_BREAK
+                                        + Constants.NO_SIMULATION);
+                                removeStackElements();
+                                root.getChildren().remove(stackFlowPane);
+                                for (Node n : root.getChildren()) {
 
-                                n.setDisable(false);
+                                    n.setDisable(false);
 
-                            }
-                            stackOn = false;
+                                }
+                                stackOn = false;
                             }
                         }
                     });
-                    
+
                     stackFlowPane.getChildren().add(insertion);
                     stackFlowPane.getChildren().add(removal);
                     stackFlowPane.getChildren().add(initialize);
@@ -909,11 +960,11 @@ public class Main extends Application {
 
                     stackOn = true;
 
-                }  
-                
+                }
+
             }
         });
-        
+
         Button queueButton = new Button("Fila");
         queueButton.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -933,10 +984,29 @@ public class Main extends Application {
                     lb.setPrefHeight(40);
                     queueFlowPane.getChildren().add(lb);
 
-                    Button initialize = new Button("IsEmpty");
+                    Button initialize = new Button("Front");
                     initialize.setPrefWidth(200);
                     initialize.setPrefHeight(37);
-                    Button insertion = new Button("Inserir");
+                    
+                    initialize.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            if (!running) {
+                                running = true;
+                                queueFlowPane.setDisable(true);
+                                tf.setText(Constants.QUEUE_FRONT);
+                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                                        + "tamanho = " + stack.size());
+                                QueueThread st = new QueueThread(animation, queue, score,
+                                        main, QueueThread.FRONT, 0, null);
+                                st.start();
+                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                            }
+                        }
+                    });
+
+                    Button insertion = new Button("Enqueue");
                     insertion.setPrefWidth(200);
                     insertion.setPrefHeight(37);
 
@@ -944,13 +1014,38 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            
+                            if (!running) {
+                                tf.setText(Constants.QUEUE_ENQUEUE);
+                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                                        + "tamanho = " + queue.size());
+                                createQueueNumberQuestion();
+                            }
                         }
                     });
 
-                    Button removal = new Button("Remover");
+                    Button removal = new Button("Dequeue");
                     removal.setPrefWidth(200);
                     removal.setPrefHeight(37);
+
+                    removal.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            if (!running) {
+
+                                running = true;
+                                queueFlowPane.setDisable(true);
+                                tf.setText(Constants.QUEUE_DEQUEUE);
+                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+                                        + "tamanho = " + queue.size());
+                                QueueThread st = new QueueThread(animation, queue, score,
+                                        main, QueueThread.DEQUEUE, 0, null);
+                                st.start();
+                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                            }
+                        }
+                    });
                     
                     Button back = new Button("Voltar");
                     back.setPrefWidth(200);
@@ -959,20 +1054,28 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-//                            removeTreeElements();
-                            root.getChildren().remove(queueFlowPane);
-                            for (Node n : root.getChildren()) {
+                            if (!running) {
+                                Main.tf.setText(Constants.NO_CODE);
+                                Main.variables.setText(Constants.VARIABLES
+                                        + Constants.NO_VARIABLES);
+                                Main.events.setText(Constants.EVENT
+                                        + Constants.LINE_BREAK
+                                        + Constants.NO_SIMULATION);
+                                removeQueueElements();
+                                root.getChildren().remove(queueFlowPane);
+                                for (Node n : root.getChildren()) {
 
-                                n.setDisable(false);
+                                    n.setDisable(false);
 
+                                }
+                                queueOn = false;
                             }
-                            queueOn = false;
                         }
                     });
 
-                    queueFlowPane.getChildren().add(initialize);
                     queueFlowPane.getChildren().add(insertion);
                     queueFlowPane.getChildren().add(removal);
+                    queueFlowPane.getChildren().add(initialize);
                     queueFlowPane.getChildren().add(back);
 
                     root.getChildren().add(queueFlowPane);
@@ -985,16 +1088,16 @@ public class Main extends Application {
 
                     queueOn = true;
 
-                }  
+                }
             }
         });
-        
+
         Button listButton = new Button("Lista");
         listButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent t) {
-                
+
                 if (!listOn && !running) {
 
                     listFlowPane = new FlowPane();
@@ -1020,14 +1123,19 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
+                            ListElement l = new ListElement
+                                    (40.0, "25", 0, 
+                                    Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65, 
+                                    Y_POSITION + 110);
                             
+                            animation.getChildren().add(l.getStackPane());
                         }
                     });
 
                     Button removal = new Button("Remover");
                     removal.setPrefWidth(200);
                     removal.setPrefHeight(37);
-                    
+
                     Button back = new Button("Voltar");
                     back.setPrefWidth(200);
                     back.setPrefHeight(37);
@@ -1062,7 +1170,7 @@ public class Main extends Application {
                     listOn = true;
 
                 }
-                
+
             }
         });
 
@@ -1075,10 +1183,6 @@ public class Main extends Application {
         button3.setPrefWidth(200);
         countingButton.setPrefWidth(200);
         button4.setPrefWidth(200);
-        button5.setPrefWidth(200);
-        button6.setPrefWidth(200);
-        button7.setPrefWidth(200);
-        button8.setPrefWidth(200);
         binaryTreeButton.setPrefWidth(401);
         vectorButton.setPrefWidth(401);
         stackButton.setPrefWidth(401);
@@ -1114,7 +1218,7 @@ public class Main extends Application {
         tilePane.getChildren().addAll(button,
                 button1, button2, button3, countingButton, button4);
 
-        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, stackButton, 
+        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, stackButton,
                 queueButton, listButton);
         flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
 
@@ -1152,6 +1256,7 @@ public class Main extends Application {
                 flowpane, events, variables, scoring, animation);
 
         createProgressBar();
+
         Scene scene = new Scene(root, 800, 600, Color.DARKSLATEGRAY);
 //        Scene scene = new Scene(root, 800, 600, Color.WHITE);
         scene.getStylesheets().add("style.css");
@@ -1276,6 +1381,46 @@ public class Main extends Application {
 
     public void setStack(List<StackElement> stack) {
         this.stack = stack;
+    }
+
+    public FlowPane getBinaryTreeFlowPane() {
+        return binaryTreeFlowPane;
+    }
+
+    public void setBinaryTreeFlowPane(FlowPane binaryTreeFlowPane) {
+        this.binaryTreeFlowPane = binaryTreeFlowPane;
+    }
+
+    public FlowPane getListFlowPane() {
+        return listFlowPane;
+    }
+
+    public void setListFlowPane(FlowPane listFlowPane) {
+        this.listFlowPane = listFlowPane;
+    }
+
+    public FlowPane getQueueFlowPane() {
+        return queueFlowPane;
+    }
+
+    public void setQueueFlowPane(FlowPane queueFlowPane) {
+        this.queueFlowPane = queueFlowPane;
+    }
+
+    public FlowPane getVectorFlowPane() {
+        return vectorFlowPane;
+    }
+
+    public void setVectorFlowPane(FlowPane vectorFlowPane) {
+        this.vectorFlowPane = vectorFlowPane;
+    }
+
+    public List<QueueElement> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(List<QueueElement> queue) {
+        this.queue = queue;
     }
     
 }
