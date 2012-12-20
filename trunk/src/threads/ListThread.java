@@ -15,6 +15,7 @@ import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import model.ListElement;
+import model.QueueElement;
 import model.Score;
 import model.StackElement;
 
@@ -60,12 +61,6 @@ public class ListThread extends Thread {
 
     public void execute() {
         
-//        try {
-//            Runtime.getRuntime().exec( "cmd /c cls" ) ; 
-//        } catch (IOException ex) {
-//            Logger.getLogger(ListThread.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
         this.score.disableListPane();
 
         try {
@@ -78,6 +73,15 @@ public class ListThread extends Thread {
                         + "tamanho = " + list.size());
 
                 insertElement(number, position);
+            } else if (operation == REMOVAL) {
+                Main.tf.setText(Constants.LIST_REMOVE);
+                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + LIST_CAPACITY + "    "
+                        + "tamanho = " + list.size());
+
+                removElement(position);
+                
             }
 
         } finally {
@@ -177,6 +181,107 @@ public class ListThread extends Thread {
         }
 
     }
+    
+    public void removElement(int position) {
+        
+        
+        if (position > list.size() || list.size() == LIST_CAPACITY) {
+            //POSICAO INVÁLIDA.
+            return;
+
+        } else {
+            
+            ListElement element = list.get(position);
+            int cycle = 0;
+
+            do {
+                element.getCircle().setFill(Color.rgb(181, 97, 116));
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                element.getCircle().setFill(Color.rgb(156, 216, 255));
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                cycle++;
+            } while (cycle != 5);
+            
+            element.getPrevious().setVisible(false);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            element.getNext().setVisible(false);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            moveUpwards(element.getStackPane(), 100);
+            element.getStackPane().setVisible(false);
+            if (!list.isEmpty() && (position + 1) < list.size()) {
+                for (int i = position + 1; i < list.size(); i++) {
+                    moveLeft(list.get(i).getStackPane(), 118);
+                }
+            }
+            
+            list.remove(position);
+            
+            for (int i = 0; i < list.size(); i++) {
+                
+                try {
+                
+                if (i == 0) {
+                    
+                    list.get(i).getPrevious().setVisible(false);
+                    
+                    if (i + 1 > list.size()) {
+                        list.get(i).getNext().setVisible(false);
+                    }
+                    if (i == 0 && list.get(i + 1) != null) {
+                        list.get(i).getNext().setVisible(true);
+                    }
+                    
+                } else if ( (i + 1) <= list.size() - 1) {
+                    
+                    if (list.get(i + 1) == null) {
+                        list.get(i).getNext().setVisible(false);
+                        list.get(i).getPrevious().setVisible(true);
+                    } else {
+                        list.get(i).getNext().setVisible(true);
+                        list.get(i).getPrevious().setVisible(true);
+                    }
+                    
+                } else {
+                    list.get(i).getNext().setVisible(true);
+                    list.get(i).getPrevious().setVisible(true);
+                }
+                
+                if (i == list.size() - 1) {
+                    list.get(i).getNext().setVisible(false);
+                }
+                
+                } catch (IndexOutOfBoundsException ex) { 
+                    hideLeft = true;
+                    hideRight = true;
+                }
+                
+                if (list.size() == 1) {
+                    list.get(0).getPrevious().setVisible(false);
+                    list.get(0).getNext().setVisible(false);
+                }
+                
+            }
+            
+        }
+        
+    }
 
 
     public void moveToLocation(StackPane pane, double x, double y) {
@@ -211,6 +316,26 @@ public class ListThread extends Thread {
 
     }
 
+    public void moveUpwards(StackPane pane, int quantity) {
+
+        int i = quantity;
+
+        while (i != 0) {
+
+            pane.setTranslateY(pane.getTranslateY() - 1);
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            i--;
+
+        }
+
+    }
+    
     public void moveRight(StackPane pane, int quantity) {
 
         int i = 0;
@@ -226,6 +351,26 @@ public class ListThread extends Thread {
             }
 
             i++;
+
+        }
+
+    }
+    
+    public void moveLeft(StackPane pane, int quantity) {
+
+        int i = quantity;
+
+        while (i != 0) {
+
+            pane.setTranslateX(pane.getTranslateX() - 1);
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            i--;
 
         }
 

@@ -21,6 +21,8 @@ public class Constants {
     public static String LINE_BREAK = "\n\n ";
     public static String INSERT_POSITION = "Escolha o índice (posição) o qual "
             + "será inserido o elemento.";
+    public static String REMOVE_POSITION = "Escolha o índice (posição) do elemento "
+            + "à ser removido.";
     public static String UNAVAILABLE_EVENT = "Por enquanto, não há eventos nesta simulação.";
     public static String INVALID_NUMBER = " Número inválido! Tente novamente.";
     public static String VARIABLES = " Variáveis: " + "\n\n";
@@ -208,12 +210,12 @@ public class Constants {
             + "    elemento = head.getProximo();\n"
             + "    head.getProximo().getProximo().setAnterior(head);\n"
             + "    head.setProximo(head.getProximo().getProximo());\n"
-            + "  } senao {\n"
+            + "  } senao {\nk"
             + "    para (int i = 0; i < indice; i++) {\n"
             + "      elemento = elemento.getProximo();\n"
             + "    }\n"
-            + "    elemento.getProximo().getProximo().setAnterior(elemento);\n"
-            + "    elemento.setProximo(elemento.getProximo().getProximo());\n"
+            + "   elemento.getProximo().getProximo().setAnterior(elemento);\n"
+            + "   elemento.setProximo(elemento.getProximo().getProximo());\n"
             + "  }\n"
             + "  tamanho_lista--;\n"
             + "}";
