@@ -576,7 +576,8 @@ public class Main extends Application {
                         
                         VectorThread vt = new VectorThread(animation, 
                                 vector, score, main, VectorThread.INSERTION, 
-                                number, element, listPosition, actualCapacity);
+                                number, element, listPosition, actualCapacity,
+                                vectorElements);
                         running = true;
                         root.getChildren().remove(questionPane);
                         vt.start();
@@ -913,11 +914,15 @@ public class Main extends Application {
         
         for (VectorElement e : vector) {
             e.getStackPane().setTranslateY(9000);
+            if (e.getNode() != null) {
+                e.getNode().getStackPane().setTranslateY(9000);
+            }
         }
         
         System.gc();
         
         vectorCapacity = 2;
+        vectorElements.clear();
         vector = new ArrayList<>(8);
         for (int i = 0; i < 8; i++) {
             vector.add(new VectorElement(80.0, 80.0, "0", 0, 
@@ -1019,6 +1024,7 @@ public class Main extends Application {
         queue = new ArrayList<>();
         list = new ArrayList<>();
         vector = new ArrayList<>(8);
+        vectorElements = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             vector.add(new VectorElement(80.0, 80.0, "0", 0, 
                     Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65
@@ -1255,6 +1261,11 @@ public class Main extends Application {
                         animation.getChildren().addAll(element.getStackPane());
                     }
                     
+                    Main.variables.setText(Constants.VARIABLES +  
+                                        "capacidade atual = " + vectorCapacity + 
+                                        "    tamanho atual = " + vectorElements.size() +
+                            "    tamanho máximo = " + vector.size());
+                    
 
                     vectorFlowPane = new FlowPane();
                     vectorFlowPane.setId("text-f");
@@ -1320,7 +1331,7 @@ public class Main extends Application {
                     vectorFlowPane.getChildren().add(back);
 
                     root.getChildren().add(vectorFlowPane);
-
+                    
                     for (Node n : root.getChildren()) {
                         if (n != vectorFlowPane && n == flowpane) {
                             n.setDisable(true);

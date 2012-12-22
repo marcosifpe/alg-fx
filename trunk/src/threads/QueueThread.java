@@ -15,7 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import model.QueueElement;
 import model.Score;
-import model.StackElement;
 
 /**
  *
@@ -121,6 +120,7 @@ public class QueueThread extends Thread {
 
             this.score.selectText("    fila[tamanho] = numero;\n");
             queueElement.getStackPane().setVisible(true);
+            
             int cycle = 0;
 
             do {
