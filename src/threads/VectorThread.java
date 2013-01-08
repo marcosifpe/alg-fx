@@ -10,9 +10,17 @@ import java.awt.Toolkit;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import model.NodeElement;
 import model.Score;
@@ -84,11 +92,13 @@ public class VectorThread extends Thread {
         }
 
     }
+    
+    private Stage dialogStage;
 
     public void insertElement(int number, int position) {
 
 
-        if (position < 0 || position > Main.vectorCapacity - 1) {
+        if (position < 0 || position > Main.vectorCapacity - 1 || position > elements.size()) {
             //ERRO FORA DO INDICE;
             return;
 
@@ -132,15 +142,26 @@ public class VectorThread extends Thread {
                 }
                 cycle++;
             } while (cycle != 5);
+            
+            
+            
+            
 
-//            for (int i = Main.vectorCapacity; i > position; i--) {
-//
-//                if ((i - 1) > 0 && vector.get(i - 1).getNode() != null) {
-//                    moveRight(vector.get(i - 1).getNode().getStackPane(), 90);
+            for (int i = Main.vectorCapacity; i > position; i--) {
+                
+//                if (i == position && vector.get(i).getNode() != null) {
+//                    moveRight(vector.get(i).getNode().getStackPane(), 90);
 //                    vector.get(i).insertNodeElement(vector.get(i - 1).getNode());
 //                }
-//
-//            }
+                
+                
+                if ((i - 1) >= 0 && vector.get(i - 1).getNode() != null) {
+                    moveRight(vector.get(i - 1).getNode().getStackPane(), 90);
+                    vector.get(i).insertNodeElement(vector.get(i - 1).getNode());
+                }
+                
+
+            }
 
             double x = Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65
                     - 300 + (position * 90);
@@ -150,60 +171,6 @@ public class VectorThread extends Thread {
                     x - nodeElement.getX() + 10,
                     y - nodeElement.getY() + 10);
 
-            if (vector.get(position).getNode() != null) {
-                vector.get(position).getNode().getStackPane().setTranslateY(9000);
-                vector.get(position).getNode().getStackPane().setVisible(false);
-                elements.remove(vector.get(position).getNode());
-            }
-            
-//            
-//            
-//            System.out.println("EL: ");
-//            for (NodeElement element1 : elements) {
-//                System.out.print(element1.getElementAsInt() + " ");
-//            }
-//            System.out.println("");
-//            System.out.println("");
-//            
-//            
-//            int sum = 0;
-//            for (int i = 0; i < elements.size(); i++) {
-//                
-//                sum = 0;
-//                for (VectorElement vectorElement1 : vector) {
-//                    if (elements.get(i).getElementAsInt() == vectorElement1.getNode().getElementAsInt()) {
-//                        sum++;
-//                    }
-//                }
-//                
-//                if (sum == 0) {
-//                    elements.remove(elements.get(i));
-//                }
-//                
-//                i--;
-//                
-//            }
-//            
-//            System.out.println("EL: ");
-//            for (NodeElement element1 : elements) {
-//                System.out.print(element1.getElementAsInt() + " ");
-//            }
-//            System.out.println("");
-//            System.out.println("");
-            
-//            for (NodeElement el : elements) {
-//                sum = 0;
-//                for (VectorElement vectorElement1 : vector) {
-//                    if (el.getElementAsInt() == vectorElement1.getNode().getElementAsInt()) {
-//                        sum++;
-//                    }
-//                }
-//                
-//                if (sum == 0) {
-//                    elements.remove(el);
-//                }
-//                
-//            }
 
             vector.get(position).insertNodeElement(nodeElement);
             elements.add(nodeElement);
@@ -211,6 +178,13 @@ public class VectorThread extends Thread {
                     + "capacidade atual = " + Main.vectorCapacity
                     + "    tamanho atual = " + elements.size()
                     + "    tamanho máximo = " + vector.size());
+            
+            System.out.println("EL: ");
+            for (NodeElement element1 : elements) {
+                System.out.print(element1.getElementAsInt() + " ");
+            }
+            System.out.println("");
+            System.out.println("");
 
         }
 

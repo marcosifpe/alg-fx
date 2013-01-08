@@ -34,6 +34,7 @@ public class NodeElement {
     private Image arrow;
     private ImageView imageView;
     private Label arrowLabel;
+    private Text text;
 
     public NodeElement() {
     }
@@ -46,7 +47,7 @@ public class NodeElement {
         this.circle.setEffect(new InnerShadow());
         this.color = 0;
         this.element = element;
-        Text text = new Text(element);
+        text = new Text(element);
         text.setFont(new Font(14.0));
         this.stackPane.getChildren().addAll(circle, text);
         this.x = x;
@@ -200,4 +201,21 @@ public class NodeElement {
         arrowLabel.setTranslateY(circle.getTranslateY() - 80);
         stackPane.getChildren().add(arrowLabel);
     }
+
+    public Label getArrowLabel() {
+        return arrowLabel;
+    }
+
+    public void setArrowLabel(Label arrowLabel) {
+        this.arrowLabel = arrowLabel;
+    }
+
+    public Text getText() {
+        return text;
+    }
+
+    public void setText(Text text) {
+        this.text = text;
+    }
+    
 }

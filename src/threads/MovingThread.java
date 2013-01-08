@@ -33,7 +33,7 @@ public class MovingThread extends Thread {
     private final Interpolator interpolator = Interpolator.LINEAR;
     private int operation;
     public final static int BUBBLE_SORT = 1, SELECTION_SORT = 2, INSERTION_SORT = 3, SHELL_SORT = 4,
-            IN_PLACE_QUICK_SORT = 5;
+            IN_PLACE_QUICK_SORT = 5, COUNTING_SORT = 6;
     private final int SPACING_X = 450;
     private final int NODES_LENGHT = 5;
     private final int Y_POSITION = 150;
@@ -211,6 +211,32 @@ public class MovingThread extends Thread {
                 Main.events.setText(Constants.EVENT + "\n\n"
                         + Constants.NO_SIMULATION);
 
+            } else if (this.operation == COUNTING_SORT) {
+                
+                Main.tf.setText(Constants.IN_PLACE_QUICK_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+                
+                //CT SORT AQUI
+                
+                clearNodes(nodes);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+
+
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+                
             }
 
         } finally {

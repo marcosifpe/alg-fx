@@ -22,6 +22,12 @@
     -fx-font-size: 12pt;
 }
 
+#text-question {
+    -fx-background-color: linear-gradient(#e0f3fa, #b6dffd);
+    
+    -fx-font-size: 12pt;
+}
+
 #points {
     -fx-background-color: linear-gradient(#b4ddb4, #002400);
     -fx-font-weight: bold;

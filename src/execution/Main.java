@@ -4,6 +4,8 @@
  */
 package execution;
 
+import com.sun.javafx.scene.control.skin.LabeledText;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
 import threads.*;
@@ -64,6 +68,7 @@ public class Main extends Application {
     private final int SPACING_X = 450;
     private final int SLEEP_TIME = 50;
     private final int Y_POSITION = 150;
+    public int count = 0;
     public static boolean running = false;
     public static boolean canChoose = false;
     public static boolean insertionNumberChosen = false;
@@ -76,6 +81,10 @@ public class Main extends Application {
     public static int vectorCapacity = 2;
     private final Interpolator interpolator = Interpolator.LINEAR;
     private FlowPane pane1 = new FlowPane();
+    private NodeElement testElement;
+    private VectorElement sumVector[];
+    private VectorElement tempVector[];
+    private NodeElement countingVector[];
 
     public static void main(String[] args) {
         launch(args);
@@ -180,7 +189,7 @@ public class Main extends Application {
     public void setReturningNumber(int returningNumber) {
         this.returningNumber = returningNumber;
     }
-
+    
     public void createNumberQuestion() {
 
         events.setText(Constants.EVENT + "\n\n"
@@ -898,6 +907,23 @@ public class Main extends Application {
 
 
     }
+    
+    public void createCountingSortElements() {
+        
+        countingVector = new NodeElement[NODES_LENGHT];
+        tempVector = new VectorElement[NODES_LENGHT];
+
+        for (int i = 1; i < NODES_LENGHT + 1; i++) {
+            countingVector[i - 1] = new NodeElement(40.0, Integer.toString((int) (Math.random() * 9)), 2, (i * 80) + SPACING_X, Y_POSITION);
+            tempVector[i - 1] = new VectorElement(20.0, 20.0, null, 0, (i * 80) + SPACING_X, Y_POSITION - 100, null);
+        }
+
+        for (NodeElement ne : countingVector) {
+            animation.getChildren().add(ne.getStackPane());
+        }
+
+
+    }
 
     public void removeElements() {
 
@@ -936,8 +962,6 @@ public class Main extends Application {
         }
         
     }
-    
-    public int count = 0;
 
     public void createTreeElement(int number, double x, double y) {
 
@@ -1016,7 +1040,10 @@ public class Main extends Application {
         }
         
     }
-
+    
+    private Stage dialogStage;
+    private int qu = 0;
+    
     public void initialize(Stage stage) {
 
         initializeTreeElement();
@@ -1170,9 +1197,35 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent t) {
-                if (!running) {
+//                if (!running) {
+//                    createConfirmDialog("fpdkuehfwe diwsjfp fisejf sawfj wsefopj12345", 0);
+                    dialogStage = new Stage();
+                    dialogStage.centerOnScreen();
+                    dialogStage.setWidth(300);
+                    dialogStage.setHeight(100);
+                    Text text = new Text("questão de teste");
+                    text.setId("sort");
+                    dialogStage.initModality(Modality.WINDOW_MODAL);
+                    Button test = new Button("Testando");
+                    
+                    test.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            qu = 1;
+                            dialogStage.close();
+                        }
+                    });
+                    dialogStage.setScene(new Scene(VBoxBuilder.create().
+                            children(text, test).
+                            build()));
+                    dialogStage.showAndWait();
+                    
+                    while (qu == 0) {
+                        sleep(10);
+                    }
                 }
-            }
+//            }
         });
 
         Button binaryTreeButton = new Button("Árvore Binária");
@@ -1709,6 +1762,29 @@ public class Main extends Application {
         stackButton.setPrefWidth(401);
         listButton.setPrefWidth(401);
         queueButton.setPrefWidth(401);
+        
+        Button createButton = new Button("Criar teste");
+        createButton.setPrefWidth(200);
+        createButton.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                testElement = new NodeElement(30.0, "3", 0, 800, 260);
+                root.getChildren().add(testElement.getStackPane());
+            }
+        });
+        Button createButton1 = new Button("Mudar element");
+        createButton1.setPrefWidth(200);
+        createButton1.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                int random = (int) (Math.random() * 100);
+                System.out.println("Random: " + random);
+                testElement.setElement(random + "");
+                testElement.getText().setText(testElement.getElement());
+            }
+        });
 
         flowpane = new FlowPane();
         flowpane.maxWidth(450);
@@ -1734,13 +1810,19 @@ public class Main extends Application {
         TilePane tilePane1 = new TilePane();
         tilePane1.maxWidth(450);
         tilePane1.setPrefColumns(1);
-        tilePane1.setPrefRows(4);
+        tilePane1.setPrefRows(6);
+        StackPane spn = new StackPane();
+        spn.maxWidth(450);
+        spn.getChildren().addAll(createButton, createButton1);
 
         tilePane.getChildren().addAll(button,
                 button1, button2, button3, countingButton, button4);
+//        tilePane.getChildren().addAll(button,
+//                button1, button2, button3, countingButton, button4, createButton, createButton1);
 
-        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, stackButton,
-                queueButton, listButton);
+//        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, stackButton,
+//                queueButton, listButton);
+        tilePane1.getChildren().addAll(vectorButton, stackButton, queueButton, listButton);
         flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
 
         events = new TextArea(" Eventos: " + "\n\n" + Constants.NO_SIMULATION);
@@ -1785,6 +1867,105 @@ public class Main extends Application {
 
     }
 
+    private FlowPane dialogFlowPane;
+    
+    public void createConfirmDialog(String questionText, int correct) {
+        
+        boolean result;
+        //Tipo pra ver se é sim ou não, ou então de introduzir número.
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.TREE_INSERTION);
+
+        //Disable em tudo.
+//        for (Node n : root.getChildren()) {
+//            if (n != questionPane || n != events || n != variables || n != tf) {
+//                n.setDisable(true);
+//            }
+//        }
+        
+        flowpane.setDisable(true);
+        
+//        dialogFlowPane.setDisable(true);
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Questão");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+//        numberField = new TextField();
+//        numberField.setPrefWidth(250);
+//        numberField.setPrefHeight(50);
+        Label text = new Label(" " + questionText);
+        text.setPrefWidth(250);
+        text.setPrefHeight(50);
+        text.setId("text-question");
+        
+
+        Button insert = new Button("Sim");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Não");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+//        numberField.setVisible(false);
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                
+//                    if (Integer.parseInt(numberField.getText()) != -1) {
+//
+//                        int number = Integer.parseInt(numberField.getText());
+//
+//                        StackElement se = new StackElement(100, 50, Integer.toString(number),
+//                                1, 457, 100);
+//
+//                        se.getStackPane().setVisible(false);
+//                        animation.getChildren().add(se.getStackPane());
+//                        StackThread st = new StackThread(animation, stack, score,
+//                                main, StackThread.INSERTION, number, se);
+//                        running = true;
+//                        root.getChildren().remove(questionPane);
+//                        st.start();
+//                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+//
+//                    } else {
+//                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+//                        hitButton = false;
+//                    }
+                
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+//                root.getChildren().remove(questionPane);
+//                stackFlowPane.setDisable(false);
+//                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+//                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, text, insert, cancel);
+        root.getChildren().add(questionPane);
+        
+    }
+    
     public void selectText(String code) {
 
         tf.requestFocus();
