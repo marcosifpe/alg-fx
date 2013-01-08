@@ -26,6 +26,7 @@ public class VectorElement {
     private int color;
     private double x, y;
     private double width, height;
+    private Text text;
     
     public VectorElement() {}
 
@@ -43,6 +44,34 @@ public class VectorElement {
         this.element = element;
 //        Text text = new Text(element);
 //        text.setFont(new Font(14.0));
+        if (this.node == null) {
+            this.stackPane.getChildren().addAll(rectangle);
+        } else {
+            this.stackPane.getChildren().addAll(rectangle, node.getStackPane());
+        }
+        this.x = x;
+        this.y = y;
+        stackPane.setLayoutX(x);
+        stackPane.setLayoutY(y);
+//        stackPane.setTranslateX(x);
+//        stackPane.setTranslateY(y);
+//        stackPane.setOnMousePressed(eventHandler1);
+    }
+    
+    public VectorElement(double width, double height, String element, int operation, 
+            double x, double y, NodeElement node, boolean hasText) {
+        
+//        EventHandler eventHandler1 = generateEventHandler(operation);
+        this.width = width;
+        this.height = height;
+        this.stackPane = new StackPane();
+        this.rectangle = new Rectangle(width, height, Color.rgb(165, 42, 42));
+        this.rectangle.setEffect(new InnerShadow());
+        this.node = node;
+        this.color= 0;
+        this.element = element;
+        text = new Text(element);
+        text.setFont(new Font(14.0));
         if (this.node == null) {
             this.stackPane.getChildren().addAll(rectangle);
         } else {
@@ -141,5 +170,14 @@ public class VectorElement {
     public void setNode(NodeElement node) {
         this.node = node;
     }
+
+    public Text getText() {
+        return text;
+    }
+
+    public void setText(Text text) {
+        this.text = text;
+    }
+
     
 }
