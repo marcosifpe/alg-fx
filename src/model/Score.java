@@ -59,6 +59,10 @@ public class Score {
         this.main.getQueueFlowPane().setDisable(false);
     }
     
+    public void enableCircularQueuePane() {
+        this.main.getCircularQueueFlowPane().setDisable(false);
+    }
+    
     public void enableListPane() {
         this.main.getListFlowPane().setDisable(false);
     }
@@ -73,6 +77,10 @@ public class Score {
     
     public void disableQueuePane() {
         this.main.getQueueFlowPane().setDisable(true);
+    }
+    
+    public void disableCircularQueuePane() {
+        this.main.getCircularQueueFlowPane().setDisable(true);
     }
     
     public void disableListPane() {
