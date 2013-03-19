@@ -4,9 +4,8 @@
  */
 package execution;
 
-import com.sun.javafx.scene.control.skin.LabeledText;
-import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,7 +42,7 @@ public class Main extends Application {
     private ProgressBar pointProgressBar;
     private ProgressIndicator flowProgressBar;
     private FlowPane fp, binaryTreeFlowPane, vectorFlowPane;
-    private FlowPane stackFlowPane, listFlowPane, queueFlowPane;
+    private FlowPane stackFlowPane, listFlowPane, queueFlowPane, circularQueueFlowPane;
     private FlowPane flowpane, questionPane;
     private TextField numberField;
     private boolean decision = false;
@@ -54,13 +53,16 @@ public class Main extends Application {
     private boolean vectorOn = false;
     private boolean stackOn = false;
     private boolean listOn = false;
+    private boolean circularListOn = false;
     private boolean queueOn = false;
     private List<BinaryNode> binaryTree;
     private List<StackElement> stack;
     private List<QueueElement> queue;
+    private List<NodeElement> circularQueue;
     private List<ListElement> list;
     private List<VectorElement> vector;
     private List<NodeElement> vectorElements;
+    
     private int actualCapacity;
     private boolean hitButton = false;
     private final int MAX_TREE_HEIGHT = 4;
@@ -76,10 +78,15 @@ public class Main extends Application {
     public static TextArea variables;
     public static FlowPane scoring;
     public static TextArea tf;
+    public static StackElement headElement, tailElement;
     public static int chosenElements = 0;
     public static int numberSet = -1;
     public static int vectorCapacity = 2;
+    public static int head = 0, tail = 0;
+    public static int circularPosition = 0;
+    public static int circularSize = 0;
     private final Interpolator interpolator = Interpolator.LINEAR;
+    private VectorElement circularContainer[];
     private FlowPane pane1 = new FlowPane();
     private NodeElement testElement;
     private VectorElement sumVector[];
@@ -432,6 +439,93 @@ public class Main extends Application {
             public void handle(ActionEvent t) {
                 root.getChildren().remove(questionPane);
                 queueFlowPane.setDisable(false);
+                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                tf.setText(Constants.NO_CODE);
+
+            }
+        });
+
+        questionPane.getChildren().addAll(question, numberField, insert, cancel);
+        root.getChildren().add(questionPane);
+
+    }
+    
+    public void createCircularQueueNumberQuestion() {
+
+        events.setText(Constants.EVENT + "\n\n"
+                + Constants.TREE_INSERTION);
+
+        circularQueueFlowPane.setDisable(true);
+
+        returningNumber = -2;
+
+        questionPane = new FlowPane();
+        questionPane.setPrefHeight(250);
+        questionPane.setPrefWidth(120);
+        questionPane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        questionPane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+
+        Label question = new Label("Qual o elemento que deseja inserir?");
+        question.setId("sort");
+        question.setPrefWidth(250);
+        question.setPrefHeight(50);
+
+        numberField = new TextField();
+        numberField.setPrefWidth(250);
+        numberField.setPrefHeight(50);
+
+        Button insert = new Button("Inserir");
+        insert.setPrefWidth(125);
+        insert.setPrefHeight(30);
+        Button cancel = new Button("Cancelar");
+        cancel.setPrefWidth(125);
+        cancel.setPrefHeight(30);
+
+        decision = false;
+        numberSet = -1;
+
+        insert.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+
+                try {
+                    if (Integer.parseInt(numberField.getText()) != -1) {
+
+                        int number = Integer.parseInt(numberField.getText());
+
+                        NodeElement qe = new NodeElement(30.0, Integer.toString(number), 1, 457, 50);
+                        qe.getStackPane().setVisible(false);
+                        
+                        animation.getChildren().add(qe.getStackPane());
+//                        QueueThread st = new QueueThread(animation, queue, score,
+//                                main, QueueThread.ENQUEUE, number, qe);
+                        CircularQueueThread st = new CircularQueueThread(animation, 
+                                circularQueue, score, main, CircularQueueThread.ENQUEUE, 
+                                number, qe);
+                        running = true;
+                        root.getChildren().remove(questionPane);
+                        st.start();
+                        events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+
+                    } else {
+                        events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                        hitButton = false;
+                    }
+                } catch (NumberFormatException ex) {
+                    events.setText(Constants.EVENT + "\n\n" + Constants.INVALID_NUMBER);
+                    hitButton = false;
+                }
+
+            }
+        });
+
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent t) {
+                root.getChildren().remove(questionPane);
+                circularQueueFlowPane.setDisable(false);
                 events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
                 tf.setText(Constants.NO_CODE);
 
@@ -1041,6 +1135,20 @@ public class Main extends Application {
         
     }
     
+    public void removeCircularQueueElements() {
+        
+        if (!circularQueue.isEmpty()) {
+            
+            for (NodeElement e : circularQueue) {
+                e.getStackPane().setTranslateY(9000);
+            }
+            
+            System.gc();
+            circularQueue = new ArrayList<>();
+        }
+        
+    }
+    
     private Stage dialogStage;
     private int qu = 0;
     
@@ -1050,6 +1158,7 @@ public class Main extends Application {
         stack = new ArrayList<>();
         queue = new ArrayList<>();
         list = new ArrayList<>();
+        circularQueue = new ArrayList<>(8);
         vector = new ArrayList<>(8);
         vectorElements = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
@@ -1076,7 +1185,7 @@ public class Main extends Application {
         tf.getStyleClass().add("text-f");
         tf.setId("text-f");
         tf.setPrefWidth(400);
-        tf.setPrefHeight(400);
+        tf.setPrefHeight(423);
         tf.setTranslateX(1);
         tf.setTranslateY(30);
         tf.setFocusTraversable(false);
@@ -1091,6 +1200,19 @@ public class Main extends Application {
 
         RadioMenuItem onItem = new RadioMenuItem("Ligado");
         RadioMenuItem offItem = new RadioMenuItem("Desligado");
+        
+        RadioMenuItem saBubble = new RadioMenuItem("Bubble Sort");
+        RadioMenuItem saSelection = new RadioMenuItem("Selection Sort");
+        RadioMenuItem saInsertion = new RadioMenuItem("Insertion Sort");
+        RadioMenuItem saShell = new RadioMenuItem("Shell Sort");
+        RadioMenuItem saQuick = new RadioMenuItem("In-Place Quick Sort");
+        RadioMenuItem saCounting = new RadioMenuItem("Counting Sort");
+        
+        RadioMenuItem dsVector = new RadioMenuItem("Vetor");
+        RadioMenuItem dsStack = new RadioMenuItem("Pilha");
+        RadioMenuItem dsQueue = new RadioMenuItem("Fila");
+        RadioMenuItem dsCircularQueue = new RadioMenuItem("Fila Circular");
+        RadioMenuItem dsList = new RadioMenuItem("Lista");
 
         onItem.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -1115,7 +1237,12 @@ public class Main extends Application {
         soundToggle.getToggles().get(0).setSelected(true);
         Menu audioMenu = MenuBuilder.create().text("Opções").items(soundMenu).build();
         Menu menu = MenuBuilder.create().text("Ajuda").items(aboutItem).build();
-        menuBar.getMenus().addAll(audioMenu, menu);
+        Menu saMenu = MenuBuilder.create().text("Algoritmos de Ordenação").
+                items(saBubble, saSelection, saInsertion, saShell, saCounting,
+                saQuick).build();
+        Menu dsMenu = MenuBuilder.create().text("Estruturas de Dados").
+                items(dsVector, dsStack, dsQueue, dsCircularQueue, dsList).build();
+        menuBar.getMenus().addAll(audioMenu, saMenu, dsMenu, menu);
         vertical.getChildren().addAll(menuBar);
 
         animation = new Group();
@@ -1259,7 +1386,7 @@ public class Main extends Application {
 
                         @Override
                         public void handle(ActionEvent t) {
-                            createNumberQuestion();
+//                            createNumberQuestion();
                         }
                     });
 
@@ -1747,7 +1874,151 @@ public class Main extends Application {
 
             }
         });
+        
+        Button circularQueueButton = new Button("Fila Circular");
+        circularQueueButton.setOnAction(new EventHandler<ActionEvent>() {
 
+            @Override
+            public void handle(ActionEvent t) {
+
+                if (!circularListOn && !running) {
+                    
+                    //========================
+                    double x = Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65;
+
+                    circularContainer = new VectorElement[8];
+                    circularContainer[0] = new VectorElement(80.0, 80.0, null, 0, x, 80.0, null, false);
+                    circularContainer[1] = new VectorElement(80.0, 80.0, null, 0, x + 80.0, 120.0, null, false);
+                    circularContainer[2] = new VectorElement(80.0, 80.0, null, 0, x + 120.0, 200.0, null, false);
+                    circularContainer[3] = new VectorElement(80.0, 80.0, null, 0, x + 80.0, 280.0, null, false);
+                    circularContainer[4] = new VectorElement(80.0, 80.0, null, 0, x, 320.0, null, false);
+                    circularContainer[5] = new VectorElement(80.0, 80.0, null, 0, x - 80.0, 280.0, null, false);
+                    circularContainer[6] = new VectorElement(80.0, 80.0, null, 0, x - 120.0, 200.0, null, false);
+                    circularContainer[7] = new VectorElement(80.0, 80.0, null, 0, x - 80.0, 120.0, null, false);
+                    
+                    for (int i = 0; i < circularContainer.length; i++) {
+                        animation.getChildren().add(circularContainer[i].getStackPane());
+                    }
+                    
+                    head = 0;
+                    tail = 0;
+                    circularPosition = 0;
+                    
+                    headElement = new StackElement(40.0, 30.0, "Head", 0, x, 40.0);
+                    tailElement = new StackElement(40.0, 30.0, "Tail", 0, x + 40.0, 40.0);
+                    
+                    animation.getChildren().add(headElement.getStackPane());
+                    animation.getChildren().add(tailElement.getStackPane());
+                    //========================
+
+                    circularQueueFlowPane = new FlowPane();
+                    circularQueueFlowPane.setId("text-f");
+                    circularQueueFlowPane.setPrefWidth(200);
+                    circularQueueFlowPane.setPrefHeight(195);
+                    circularQueueFlowPane.setTranslateX(102);
+                    circularQueueFlowPane.setTranslateY(431);
+                    Label lb = new Label("    Fila Circular:");
+                    lb.setId("sort");
+                    lb.setPrefWidth(200);
+                    lb.setPrefHeight(40);
+                    circularQueueFlowPane.getChildren().add(lb);
+
+                    Button initialize = new Button("IsEmpty");
+                    initialize.setPrefWidth(200);
+                    initialize.setPrefHeight(37);
+                    
+                    Button insertion = new Button("Enqueue");
+                    insertion.setPrefWidth(200);
+                    insertion.setPrefHeight(37);
+
+                    insertion.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            
+                            createCircularQueueNumberQuestion();
+                        }
+                    });
+
+                    Button removal = new Button("Dequeue");
+                    removal.setPrefWidth(200);
+                    removal.setPrefHeight(37);
+                    
+                    removal.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            if (!running) {
+//                                tf.setText(Constants.LIST_REMOVE);
+//                                variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+//                                        + "tamanho = " + circularQueue.size());
+//                                createListPositionRemovalQuestion();
+                                running = true;
+                                circularQueueFlowPane.setDisable(true);
+//                                tf.setText(Constants.QUEUE_DEQUEUE);
+//                                variables.setText(Constants.VARIABLES + "capacidade = " + 5 + "    "
+//                                        + "tamanho = " + queue.size());
+                                CircularQueueThread st = new CircularQueueThread
+                                        (animation, circularQueue, score, 
+                                        main, CircularQueueThread.DEQUEUE, 0, null);
+                                st.start();
+                                events.setText(Constants.EVENT + "\n\n" + Constants.NO_SIMULATION);
+                                
+                            }
+                        }
+                    });
+
+                    Button back = new Button("Voltar");
+                    back.setPrefWidth(200);
+                    back.setPrefHeight(37);
+                    back.setOnAction(new EventHandler<ActionEvent>() {
+
+                        @Override
+                        public void handle(ActionEvent t) {
+                            Main.tf.setText(Constants.NO_CODE);
+                            Main.variables.setText(Constants.VARIABLES
+                                    + Constants.NO_VARIABLES);
+                            Main.events.setText(Constants.EVENT
+                                    + Constants.LINE_BREAK
+                                    + Constants.NO_SIMULATION);
+//                            removeListElements();
+                            removeCircularQueueElements();
+                            for (int i = 0; i < circularContainer.length; i++) {
+                                circularContainer[i].getStackPane().setTranslateY(9000);
+                            }
+                            headElement.getStackPane().setTranslateY(9000);
+                            tailElement.getStackPane().setTranslateY(9000);
+                            
+                            root.getChildren().remove(circularQueueFlowPane);
+                            for (Node n : root.getChildren()) {
+                                n.setDisable(false);
+                            }
+                            circularListOn = false;
+                        }
+                    });
+
+                    circularQueueFlowPane.getChildren().add(initialize);
+                    circularQueueFlowPane.getChildren().add(insertion);
+                    circularQueueFlowPane.getChildren().add(removal);
+                    circularQueueFlowPane.getChildren().add(back);
+
+                    root.getChildren().add(circularQueueFlowPane);
+
+                    for (Node n : root.getChildren()) {
+                        if (n != circularQueueFlowPane && n == flowpane) {
+                            n.setDisable(true);
+                        }
+                    }
+
+                    circularListOn = true;
+
+                }
+
+            }
+        });
+        
+        
+        
         horizontalBox = new HBox();
         horizontalBox.setTranslateY(29);
 
@@ -1761,6 +2032,7 @@ public class Main extends Application {
         vectorButton.setPrefWidth(401);
         stackButton.setPrefWidth(401);
         listButton.setPrefWidth(401);
+        circularQueueButton.setPrefWidth(401);
         queueButton.setPrefWidth(401);
         
         Button createButton = new Button("Criar teste");
@@ -1790,7 +2062,7 @@ public class Main extends Application {
         flowpane.maxWidth(450);
         flowpane.setPrefHeight(1000);
         flowpane.setId("flow");
-        flowpane.setTranslateY(431);
+        flowpane.setTranslateY(454);
 
         TilePane tilePane = new TilePane();
         tilePane.maxWidth(450);
@@ -1822,7 +2094,8 @@ public class Main extends Application {
 
 //        tilePane1.getChildren().addAll(binaryTreeButton, vectorButton, stackButton,
 //                queueButton, listButton);
-        tilePane1.getChildren().addAll(vectorButton, stackButton, queueButton, listButton);
+        tilePane1.getChildren().addAll(vectorButton, stackButton, queueButton, 
+                circularQueueButton, listButton);
         flowpane.getChildren().addAll(sorting, tilePane, datastructures, tilePane1);
 
         events = new TextArea(" Eventos: " + "\n\n" + Constants.NO_SIMULATION);
@@ -2148,5 +2421,31 @@ public class Main extends Application {
     public void setVectorElements(List<NodeElement> vectorElements) {
         this.vectorElements = vectorElements;
     }
+
+    public VectorElement[] getCircularContainer() {
+        return circularContainer;
+    }
+
+    public void setCircularContainer(VectorElement[] circularContainer) {
+        this.circularContainer = circularContainer;
+    }
+
+    public List<NodeElement> getCircularQueue() {
+        return circularQueue;
+    }
+
+    public void setCircularQueue(List<NodeElement> circularQueue) {
+        this.circularQueue = circularQueue;
+    }
+
+    public FlowPane getCircularQueueFlowPane() {
+        return circularQueueFlowPane;
+    }
+
+    public void setCircularQueueFlowPane(FlowPane circularQueueFlowPane) {
+        this.circularQueueFlowPane = circularQueueFlowPane;
+    }
+    
+    
     
 }
