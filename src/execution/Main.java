@@ -4,9 +4,12 @@
  */
 package execution;
 
+//RESOLUÇÃO MÍNIMA 1280 x 768 (Ajustar pontuação)
+
 import java.awt.Toolkit;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,9 +73,12 @@ public class Main extends Application {
     private final int SPACING_X = 450;
     private final int SLEEP_TIME = 50;
     private final int Y_POSITION = 150;
+    private final int COUNTING_LENGHT = 8;
+    private final int BOXES_LENGHT = 8;
     public int count = 0;
     public static boolean running = false;
     public static boolean canChoose = false;
+    public static boolean canChooseBox = false;
     public static boolean insertionNumberChosen = false;
     public static TextArea events;
     public static TextArea variables;
@@ -80,6 +86,7 @@ public class Main extends Application {
     public static TextArea tf;
     public static StackElement headElement, tailElement;
     public static int chosenElements = 0;
+    public static int chosenBoxes = 0;
     public static int numberSet = -1;
     public static int vectorCapacity = 2;
     public static int head = 0, tail = 0;
@@ -92,11 +99,12 @@ public class Main extends Application {
     private VectorElement sumVector[];
     private VectorElement tempVector[];
     private NodeElement countingVector[];
+    private CountingBox countingBoxes[];
 
     public static void main(String[] args) {
         launch(args);
     }
-
+    
     @Override
     public void start(Stage stage) {
         pane1.prefHeightProperty().bind(stage.heightProperty());
@@ -1002,21 +1010,54 @@ public class Main extends Application {
 
     }
     
+    private int tempMin, tempMax;
+    private NodeElement sortedVector[];
+    
     public void createCountingSortElements() {
         
-        countingVector = new NodeElement[NODES_LENGHT];
-        tempVector = new VectorElement[NODES_LENGHT];
+        
+        countingVector = new NodeElement[COUNTING_LENGHT];
+        sortedVector = new NodeElement[COUNTING_LENGHT];
 
-        for (int i = 1; i < NODES_LENGHT + 1; i++) {
-            countingVector[i - 1] = new NodeElement(40.0, Integer.toString((int) (Math.random() * 9)), 2, (i * 80) + SPACING_X, Y_POSITION);
-            tempVector[i - 1] = new VectorElement(20.0, 20.0, null, 0, (i * 80) + SPACING_X, Y_POSITION - 100, null);
+        for (int i = 1; i < COUNTING_LENGHT + 1; i++) {
+            countingVector[i - 1] = new NodeElement(40.0, Integer.toString((int) (Math.random() * 8)), 2, (i * 80) + SPACING_X, Y_POSITION);
+            sortedVector[i - 1] = new NodeElement(40.0, Integer.toString(0), 0, (i * 80) + SPACING_X, Y_POSITION + 100.0);
         }
 
         for (NodeElement ne : countingVector) {
             animation.getChildren().add(ne.getStackPane());
         }
+        
+        for (NodeElement ne : sortedVector) {
+            animation.getChildren().add(ne.getStackPane());
+            ne.getStackPane().setVisible(false);
+        }
 
+        createCountingBoxes();
+    }
+    
+    public void createCountingBoxes() {
+        
+        List<Integer> tempList = new ArrayList<>();
+        
+        for (int i = 0; i < countingVector.length; i++) {
+            tempList.add(countingVector[i].getElementAsInt());
+        }
+        tempMin = Collections.min(tempList);
+        tempMax = Collections.max(tempList);
+        
+        countingBoxes = new CountingBox[BOXES_LENGHT];
+        
+        for (int i = 1; i < BOXES_LENGHT + 1; i++) {
 
+            countingBoxes[i - 1] = new CountingBox(80.0, 80.0, Integer.toString(0), 
+                    Integer.toString(i - 1), 1, (i * 80) + SPACING_X, Y_POSITION + 210);
+            
+        }
+        
+        for (CountingBox ne : countingBoxes) {
+            animation.getChildren().add(ne.getStackPane());
+        }
     }
 
     public void removeElements() {
@@ -1027,6 +1068,27 @@ public class Main extends Application {
 
         System.gc();
         nodes = new NodeElement[NODES_LENGHT];
+
+    }
+    
+    public void removeCountingElements() {
+        
+        for (NodeElement e : countingVector) {
+            e.getStackPane().setTranslateY(9000);
+        }
+        
+        for (NodeElement e : sortedVector) {
+            e.getStackPane().setTranslateY(9000);
+        }
+        
+        for (CountingBox e : countingBoxes) {
+            e.getStackPane().setTranslateY(9000);
+        }
+        
+        System.gc();
+        countingVector = new NodeElement[COUNTING_LENGHT];
+        sortedVector = new NodeElement[COUNTING_LENGHT];
+        countingBoxes = new CountingBox[BOXES_LENGHT];
 
     }
     
@@ -1324,35 +1386,14 @@ public class Main extends Application {
 
             @Override
             public void handle(ActionEvent t) {
-//                if (!running) {
-//                    createConfirmDialog("fpdkuehfwe diwsjfp fisejf sawfj wsefopj12345", 0);
-                    dialogStage = new Stage();
-                    dialogStage.centerOnScreen();
-                    dialogStage.setWidth(300);
-                    dialogStage.setHeight(100);
-                    Text text = new Text("questão de teste");
-                    text.setId("sort");
-                    dialogStage.initModality(Modality.WINDOW_MODAL);
-                    Button test = new Button("Testando");
-                    
-                    test.setOnAction(new EventHandler<ActionEvent>() {
-
-                        @Override
-                        public void handle(ActionEvent t) {
-                            qu = 1;
-                            dialogStage.close();
-                        }
-                    });
-                    dialogStage.setScene(new Scene(VBoxBuilder.create().
-                            children(text, test).
-                            build()));
-                    dialogStage.showAndWait();
-                    
-                    while (qu == 0) {
-                        sleep(10);
-                    }
+                if (!running) {
+                    createCountingSortElements();
+                    SortingThread mt = new SortingThread(SortingThread.COUNTING_SORT, 
+                            root, score, countingVector, countingBoxes, sortedVector);
+                    running = true;
+                    mt.start();
                 }
-//            }
+            }
         });
 
         Button binaryTreeButton = new Button("Árvore Binária");

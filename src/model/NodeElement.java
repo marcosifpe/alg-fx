@@ -218,4 +218,9 @@ public class NodeElement {
         this.text = text;
     }
     
+    public void setAnimationElement(int i) {
+        this.text.setText(Integer.toString(i));
+        
+    }
+    
 }
