@@ -7,12 +7,16 @@ package threads;
 import execution.Constants;
 import execution.Main;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Interpolator;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javax.swing.JOptionPane;
+import model.CountingBox;
 import model.NodeElement;
 import model.Question;
 import model.Score;
@@ -24,6 +28,8 @@ import model.Score;
 public class SortingThread extends Thread {
 
     NodeElement nodes[];
+    CountingBox boxes[];
+    NodeElement sorted[];
     Group root;
     private Group animation;
     private Main instance;
@@ -33,7 +39,7 @@ public class SortingThread extends Thread {
     private final Interpolator interpolator = Interpolator.LINEAR;
     private int operation;
     public final static int BUBBLE_SORT = 1, SELECTION_SORT = 2, INSERTION_SORT = 3, SHELL_SORT = 4,
-            IN_PLACE_QUICK_SORT = 5;
+            IN_PLACE_QUICK_SORT = 5, COUNTING_SORT = 6;
     private final int SPACING_X = 450;
     private final int NODES_LENGHT = 5;
     private final int Y_POSITION = 150;
@@ -69,6 +75,16 @@ public class SortingThread extends Thread {
         this.root = root;
         this.score = score;
         this.nodes = nodes;
+    }
+    
+    public SortingThread(int operation, Group root, Score score, NodeElement[] nodes, 
+            CountingBox[] boxes, NodeElement[] sorted) {
+        this.operation = operation;
+        this.root = root;
+        this.score = score;
+        this.nodes = nodes;
+        this.boxes = boxes;
+        this.sorted = sorted;
     }
 
     public SortingThread(NodeElement[] nodes) {
@@ -213,14 +229,49 @@ public class SortingThread extends Thread {
                 Main.events.setText(Constants.EVENT + "\n\n"
                         + Constants.NO_SIMULATION);
 
+            } else if (this.operation == COUNTING_SORT) {
+
+                Main.tf.setText(Constants.COUNTING_SORT);
+                this.score.setAskedQuestions(0);
+                this.score.setRightAnswers(0);
+                this.score.setWrongAnswers(0);
+                this.score.fillSetProgressBar(0);
+                this.score.setPoints(0);
+
+                System.out.println("Counting sort");
+                CountingSort();
+
+                clearNodes(nodes);
+                clearBoxes(boxes);
+                
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.SIMULATION_FINISHED);
+                DecimalFormat df = new DecimalFormat("#.#");
+                String points = df.format(this.score.getPoints()) + "%";
+                JOptionPane.showMessageDialog(null, "Pontuação:  " + points);
+
+                this.score.removeElements();
+                this.score.fillSetProgressBar(0);
+                Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+
             }
             
 //            Main.
 
         } finally {
-
+            Main.tf.setText(Constants.NO_CODE);
+                Main.events.setText(Constants.EVENT + "\n\n"
+                        + Constants.NO_SIMULATION);
+            Main.variables.setText(Constants.VARIABLES + Constants.NO_VARIABLES);
             Main.running = false;
-            this.score.removeElements();
+            if (operation != COUNTING_SORT) {
+                this.score.removeElements();
+            } else {
+                this.score.fillSetProgressBar(0);
+                this.score.removeCountingElements();
+            }
             return;
 
         }
@@ -377,6 +428,16 @@ public class SortingThread extends Thread {
             nodeElement.setColor(0);
         }
 
+    }
+    
+    public void clearBoxes(CountingBox boxes[]) {
+        
+        for (CountingBox countingBox : boxes) {
+            countingBox.getCountingRectangle().setFill(Color.rgb(165, 42, 42));
+            countingBox.getPositionRectangle().setFill(Color.rgb(165, 180, 82));
+            countingBox.setColor(0);
+        }
+        
     }
 
     public static void clearNodeColor(NodeElement nodes[]) {
@@ -672,6 +733,129 @@ public class SortingThread extends Thread {
 
     }
 
+    public void CountingSort() {
+        
+        
+        
+        int min, max;
+        List<Integer> elementList = new ArrayList<>();
+        
+        for (NodeElement e : nodes) {
+            elementList.add(e.getElementAsInt());
+        }
+        
+        min = Collections.min(elementList);
+        max = Collections.max(elementList);
+        
+        for (int i = 0; i < nodes.length; i++) {
+            
+            Main.variables.setText(Constants.VARIABLES + "min = " + min + "    "
+                    + "max= " + max + "\n" + "atual = " + nodes[i].getElementAsInt()
+                    + "     i = " + i);
+            this.score.selectText("para (int i = 0; i < vetor.tamanho; i++) {\n\n");
+        
+            this.score.selectText(" vetorContagem[ vetorContagem[ i ] - minimo]++;\n\n");
+            
+            Main.canChooseBox = true;
+            Main.chosenBoxes = 0;
+            clearNodes(nodes);
+            clearBoxes(boxes);
+
+            Question question = new Question(0, nodes[i].getElementAsInt() - min, 
+                    nodes, boxes);
+
+            if (question.askBoxes(Question.BOX_SELECTION)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseBox = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            boxes[nodes[i].getElementAsInt() - min].setCountingValue
+                    (Integer.parseInt(boxes[nodes[i].getElementAsInt() - min].getElementC()) + 1);
+            
+            clearBoxes(boxes);
+            
+        }
+        
+        
+        this.score.selectText("z = 0;\n\n");
+        int z = 0;
+        Main.variables.setText(Constants.VARIABLES + "min = " + min + "    "
+                    + "max= " + max + "\n" + "z = " + z);
+        
+        for (int i = min; i <= max; i++) {
+            
+            this.score.selectText("para (int i = minimo; i <= maximo; i++) {\n\n");
+            Main.variables.setText(Constants.VARIABLES + "min = " + min + "    "
+                    + "max = " + max + "\n" + "z = " + z + "     i = " + i);
+            
+            while (Integer.parseInt(boxes[i - min].getElementC()) > 0) {
+                
+                this.score.selectText("  enquanto (vetorContagem[i - minimo] > 0) {\n\n");
+                
+                //===== TEST =====
+                Main.canChooseBox = true;
+                Main.chosenBoxes = 0;
+                clearNodes(nodes);
+                clearBoxes(boxes);
+
+                Question question = new Question(0, i - min, nodes, boxes);
+
+                if (question.askBoxes(Question.ELEMENT_SELECTION)) {
+                    Constants.playQuestionSound(0);
+                    this.score.addRightAnswer();
+                } else {
+                    Constants.playQuestionSound(1);
+                    this.score.addWrongAnswer();
+                }
+                this.score.addTotal();
+                this.score.fillSetProgressBar(this.score.getPoints());
+
+                Main.canChooseBox = false;
+                
+                
+//                nodes[z].setElementAsInt(i);
+                
+                sorted[z].setElementAsInt(i);
+                
+                this.score.selectText("    vetor[ z ] = i;\n");
+                
+                sorted[z].getStackPane().setVisible(true);
+                sorted[z].setAnimationElement(i);
+//                nodes[z].setAnimationElement(i);
+
+                clearBoxes(boxes);
+            
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                this.score.selectText("    z++;\n");
+                z++;
+                Main.variables.setText(Constants.VARIABLES + "min = " + min + "    "
+                    + "max= " + max + "\n" + "z = " + z);
+                
+                this.score.selectText("    vetorContagem[i - min]--;\n\n");
+                boxes[i - min].setCountingValue(Integer.parseInt(boxes[i - min].getElementC()) - 1);
+            }
+            
+        }
+    }
+   
     public void swapElements(NodeElement node1, NodeElement node2, int pos1, int pos2, int before) {
 
         double node1X, node1Y, node2X, node2Y, node1Xtemp, node2Xtemp;

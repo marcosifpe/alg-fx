@@ -43,6 +43,10 @@ public class Score {
         this.main.removeElements();
     }
     
+    public void removeCountingElements() {
+        this.main.removeCountingElements();
+    }
+    
     public void createMainProgressBar() {
         this.main.createProgressBar();
     }

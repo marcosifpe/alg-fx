@@ -28,6 +28,10 @@ public class Constants {
     public static String VARIABLES = " Variáveis: " + "\n\n";
     public static String NO_CODE = " Pseudocódigo ainda não selecionado.";
     public static String ELEMENT_CHANGE = " Escolha os elementos à serem trocados.";
+    public static String BOX_SELECTION = " Escolha a caixa de contagem a qual será "
+            + "adicionada o valor do elemento atual.";
+    public static String ELEMENT_SELECTION = " Escolha na caixa de contagem qual elemento "
+            + "será disposto no vetor de ordenação.";
     public static String TREE_INSERTION = " Escolha o elemento à ser inserido.";
     public static String NO_SIMULATION = " Nenhuma simulação selecionada. \n"
             + " Escolha dentre as opções dadas no menu à esquerda.";
