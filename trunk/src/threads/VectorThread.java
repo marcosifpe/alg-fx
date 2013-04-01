@@ -10,21 +10,13 @@ import java.awt.Toolkit;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import model.NodeElement;
 import model.Score;
-import model.StackElement;
 import model.VectorElement;
 
 /**
@@ -149,11 +141,6 @@ public class VectorThread extends Thread {
 
             for (int i = Main.vectorCapacity; i > position; i--) {
                 
-//                if (i == position && vector.get(i).getNode() != null) {
-//                    moveRight(vector.get(i).getNode().getStackPane(), 90);
-//                    vector.get(i).insertNodeElement(vector.get(i - 1).getNode());
-//                }
-                
                 
                 if ((i - 1) >= 0 && vector.get(i - 1).getNode() != null) {
                     moveRight(vector.get(i - 1).getNode().getStackPane(), 90);
@@ -261,4 +248,25 @@ public class VectorThread extends Thread {
         }
 
     }
+    
+    public void moveLeft(StackPane pane, int quantity) {
+
+        int i = quantity;
+
+        while (i != 0) {
+
+            pane.setTranslateX(pane.getTranslateX() - 1);
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            i--;
+
+        }
+
+    }
+    
 }

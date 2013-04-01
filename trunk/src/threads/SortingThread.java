@@ -805,7 +805,6 @@ public class SortingThread extends Thread {
                 
                 this.score.selectText("  enquanto (vetorContagem[i - minimo] > 0) {\n\n");
                 
-                //===== TEST =====
                 Main.canChooseBox = true;
                 Main.chosenBoxes = 0;
                 clearNodes(nodes);
