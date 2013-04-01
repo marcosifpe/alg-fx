@@ -33,7 +33,7 @@ public class StackElement {
 
     public StackElement(double width, double height, String element, int operation, 
             double x, double y) {
-//        EventHandler eventHandler1 = generateEventHandler(operation);
+        EventHandler eventHandler1 = generateEventHandler(2);
         this.width = width;
         this.height = height;
         this.stackPane = new StackPane();
@@ -50,7 +50,29 @@ public class StackElement {
         stackPane.setLayoutY(y);
 //        stackPane.setTranslateX(x);
 //        stackPane.setTranslateY(y);
-//        stackPane.setOnMousePressed(eventHandler1);
+        stackPane.setOnMousePressed(eventHandler1);
+    }
+    
+    public StackElement(double width, double height, String element, int operation, 
+            double x, double y, int handler) {
+        EventHandler eventHandler1 = generateEventHandler(handler);
+        this.width = width;
+        this.height = height;
+        this.stackPane = new StackPane();
+        this.rectangle = new Rectangle(width, height, Color.rgb(156, 216, 255));
+        this.rectangle.setEffect(new InnerShadow());
+        this.color = 0;
+        this.element = element;
+        Text text = new Text(element);
+        text.setFont(new Font(14.0));
+        this.stackPane.getChildren().addAll(rectangle, text);
+        this.x = x;
+        this.y = y;
+        stackPane.setLayoutX(x);
+        stackPane.setLayoutY(y);
+//        stackPane.setTranslateX(x);
+//        stackPane.setTranslateY(y);
+        stackPane.setOnMousePressed(eventHandler1);
     }
 
     public EventHandler generateEventHandler(int operation) {
@@ -63,7 +85,24 @@ public class StackElement {
 
                     @Override
                     public void handle(Event t) {
-                        JOptionPane.showMessageDialog(null, "Teste");
+
+                        if (Main.canChooseHeadTail) {
+
+                            if (color == 0) {
+
+                                rectangle.setFill(Color.rgb(120, 201, 178));
+                                color = 1;
+                                Main.chosenHeadTails++;
+
+                            } else {
+
+                                rectangle.setFill(Color.rgb(156, 216, 255));
+                                color = 0;
+                                Main.chosenHeadTails--;
+
+                            }
+
+                        }
                     }
                 };
                 break;
@@ -74,19 +113,19 @@ public class StackElement {
                     @Override
                     public void handle(Event t) {
 
-                        if (Main.canChoose) {
+                        if (Main.canChooseStack) {
 
                             if (color == 0) {
 
                                 rectangle.setFill(Color.rgb(120, 201, 178));
                                 color = 1;
-                                Main.chosenElements++;
+                                Main.chosenStacks++;
 
                             } else {
 
                                 rectangle.setFill(Color.rgb(156, 216, 255));
                                 color = 0;
-                                Main.chosenElements--;
+                                Main.chosenStacks--;
 
                             }
 

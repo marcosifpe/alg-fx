@@ -6,6 +6,7 @@ package model;
 
 import execution.Constants;
 import execution.Main;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,12 +19,21 @@ public class Question {
     private int chosenElements;
     private int chosenBoxes;
     private int correctBox;
+    private int correctQueue;
+    private int correctStack;
     private int firstPosition;
     private int secondPosition;
+    private String correctIndex;
     private NodeElement nodes[];
+    private StackElement head, tail;
     private CountingBox boxes[];
+    private List<QueueElement> queues;
+    private List<StackElement> stack;
     private boolean answered = false;
-    public static final int ELEMENT_CHANGE = 1, BOX_SELECTION = 2, ELEMENT_SELECTION = 3;
+    public static final int ELEMENT_CHANGE = 1, BOX_SELECTION = 2, 
+            ELEMENT_SELECTION = 3, FRONT_ELEMENT = 4, POST_ELEMENT = 5, 
+            CORRECT_REMOVAL = 6, TOP_ELEMENT = 7, HEAD_TAIL_ENQUEUE = 8,
+            HEAD_TAIL_DEQUEUE = 9, HEAD_TAIL_FRONT = 10;
     
 
     public Question(int chosenElements, int firstPosition, int secondPosition, NodeElement[] nodes) {
@@ -31,6 +41,26 @@ public class Question {
         this.firstPosition = firstPosition;
         this.secondPosition = secondPosition;
         this.nodes = nodes;
+    }
+    
+    public Question(int chosenElements, int correctQueue, List<QueueElement> queue) {
+        this.chosenElements = chosenElements;
+        this.correctQueue = correctQueue;
+        this.queues = queue;
+    }
+    
+    public Question(int chosenElements, int correctStack, List<StackElement> stack, int aux) {
+        this.chosenElements = chosenElements;
+        this.correctStack = correctStack;
+        this.stack = stack;
+    }
+    
+    public Question(int chosenElements, String correctIndex, 
+            StackElement head, StackElement tail) {
+        this.chosenElements = chosenElements;
+        this.correctIndex = correctIndex;
+        this.head = head;
+        this.tail = tail;
     }
     
     public Question(int chosenBoxes, int correctBox, 
@@ -71,6 +101,89 @@ public class Question {
 
     public void setSecondPosition(int secondPosition) {
         this.secondPosition = secondPosition;
+    }
+    
+    public boolean askCircularHead(int operation, int index) {
+        
+        if (operation == HEAD_TAIL_ENQUEUE) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.HEAD_TAIL_ENQUEUE);
+        } else if (operation == HEAD_TAIL_DEQUEUE) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.HEAD_TAIL_DEQUEUE);
+        } else if (operation == HEAD_TAIL_FRONT) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.HEAD_TAIL_FRONT);
+        }
+        
+        boolean response = false;
+
+        while (!hasAnswered()) {
+
+            if (Main.chosenHeadTails == 1) {
+
+                if (this.head.getColor() == 1 && this.tail.getColor() == 0) {
+
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "CORRETO!");
+                    response = true;
+
+                } else {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "ERRADO! Tente novamente.");
+                    response = false;
+                }
+
+                answered = true;
+
+            }
+
+        }
+        
+        return response;
+        
+    }
+    
+    public boolean askCircularTail(int operation, int index) {
+        
+        if (operation == HEAD_TAIL_ENQUEUE) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.HEAD_TAIL_ENQUEUE);
+        } else if (operation == HEAD_TAIL_DEQUEUE) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.HEAD_TAIL_DEQUEUE);
+        } 
+        
+        boolean response = false;
+
+        while (!hasAnswered()) {
+
+            if (Main.chosenHeadTails == 1) {
+
+                if (this.head.getColor() == 0 && this.tail.getColor() == 1) {
+
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "CORRETO!");
+                    response = true;
+
+                } else {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "ERRADO! Tente novamente.");
+                    response = false;
+                }
+
+                answered = true;
+
+            }
+
+        }
+        
+        return response;
+        
     }
     
     public boolean askBoxes(int operation) {
@@ -143,6 +256,92 @@ public class Question {
 
             }
 
+
+
+        }
+        
+        return response;
+
+    }
+    
+    public boolean askStack(int operation) {
+
+        if (operation == TOP_ELEMENT) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.FRONT_ELEMENT);
+        } else if (operation == POST_ELEMENT) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.POST_ELEMENT);
+        } else if (operation == CORRECT_REMOVAL) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.CORRECT_REMOVAL);
+        }
+        
+        boolean response = false;
+
+        while (!hasAnswered()) {
+
+            if (Main.chosenStacks == 1) {
+
+                if (this.stack.get(correctStack).getColor() == 1) {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "CORRETO!");
+                    response = true;
+
+                } else {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "ERRADO! Tente novamente.");
+                    response = false;
+                }
+
+                answered = true;
+
+            }
+
+
+        }
+        
+        return response;
+
+    }
+    
+    public boolean askQueue(int operation) {
+
+        if (operation == FRONT_ELEMENT) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.FRONT_ELEMENT);
+        } else if (operation == POST_ELEMENT) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.POST_ELEMENT);
+        } else if (operation == CORRECT_REMOVAL) {
+            Main.events.setText(Constants.EVENT + "\n\n"
+                    + Constants.CORRECT_REMOVAL);
+        }
+        
+        boolean response = false;
+
+        while (!hasAnswered()) {
+
+            if (Main.chosenQueues == 1) {
+
+                if (this.queues.get(correctQueue).getColor() == 1) {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "CORRETO!");
+                    response = true;
+
+                } else {
+
+                    Main.events.setText(Constants.EVENT + "\n\n"
+                            + "ERRADO! Tente novamente.");
+                    response = false;
+                }
+
+                answered = true;
+
+            }
 
 
         }

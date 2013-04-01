@@ -28,6 +28,15 @@ public class Constants {
     public static String VARIABLES = " Variáveis: " + "\n\n";
     public static String NO_CODE = " Pseudocódigo ainda não selecionado.";
     public static String ELEMENT_CHANGE = " Escolha os elementos à serem trocados.";
+    
+    public static String HEAD_TAIL_ENQUEUE = " Escolha um dos índices (head ou tail) o qual o próximo elemento será inserido.";
+    public static String HEAD_TAIL_DEQUEUE = " Escolha um dos índices (head ou tail) o qual o próximo elemento será removido.";
+    public static String HEAD_TAIL_FRONT = " Escolha um dos índices (head ou tail) o qual representa o elemento frontal da fila.";
+    
+    public static String FRONT_ELEMENT = " Escolha o elemento \"cabeça\" da fila.";
+    public static String CORRECT_REMOVAL = " Escolha o elemento correto a ser removido.";
+    public static String TOP_ELEMENT = " Escolha o elemento que está no topo da pilha.";
+    public static String POST_ELEMENT = " Escolha o elemento o qual o próximo elemento irá suceder.";
     public static String BOX_SELECTION = " Escolha a caixa de contagem a qual será "
             + "adicionada o valor do elemento atual.";
     public static String ELEMENT_SELECTION = " Escolha na caixa de contagem qual elemento "
@@ -256,6 +265,32 @@ public class Constants {
             + "      }\n"
             + "    }\n"
             + "    tamanho_vetor--;"
+            + "  }\n"
+            + "}";
+    public static String CIRCULAR_ENQUEUE = "     FILA CIRCULAR \t\t\n\n"
+            + "Enqueue (int elemento) {\n"
+            + "  se ( (capacidade - head + tail) % capacidade \n           == capacidade - 1) {\n"
+            + "    Erro: A fila está cheia!\n"
+            + "  } senao {\n"
+            + "    fila[ tail ] = elemento;\n"
+            + "    tail = (tail + 1) % capacidade;\n"
+            + "  }\n"
+            + "}";            
+    public static String CIRCULAR_DEQUEUE = "     FILA CIRCULAR \t\t\n\n"
+            + "Dequeue (int elemento) {\n"
+            + "  se((capacidade - head + tail) % capacidade == 0) {\n"
+            + "    Erro: A fila está vazia!\n"
+            + "  } senao {\n"
+            + "    fila[ head ] = null;\n"
+            + "    head = (head + 1) % capacidade;\n"
+            + "  }\n"
+            + "}";            
+    public static String CIRCULAR_FRONT = "     FILA CIRCULAR \t\t\n\n"
+            + "Front () {\n"
+            + "  se((capacidade - head + tail) % capacidade == 0) {\n"
+            + "    Erro: A fila está vazia!\n"
+            + "  } senao {\n"
+            + "    retorna fila[ head ];\n"
             + "  }\n"
             + "}";
     public static String GUESS_RIGHT = "acerto.wav";

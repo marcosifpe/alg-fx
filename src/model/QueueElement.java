@@ -33,7 +33,7 @@ public class QueueElement {
 
     public QueueElement(double width, double height, String element, int operation, 
             double x, double y) {
-//        EventHandler eventHandler1 = generateEventHandler(operation);
+        EventHandler eventHandler1 = generateEventHandler(2);
         this.width = width;
         this.height = height;
         this.stackPane = new StackPane();
@@ -50,7 +50,7 @@ public class QueueElement {
         stackPane.setLayoutY(y);
 //        stackPane.setTranslateX(x);
 //        stackPane.setTranslateY(y);
-//        stackPane.setOnMousePressed(eventHandler1);
+        stackPane.setOnMousePressed(eventHandler1);
     }
 
     public EventHandler generateEventHandler(int operation) {
@@ -74,19 +74,19 @@ public class QueueElement {
                     @Override
                     public void handle(Event t) {
 
-                        if (Main.canChoose) {
+                        if (Main.canChooseQueue) {
 
                             if (color == 0) {
 
                                 rectangle.setFill(Color.rgb(120, 201, 178));
                                 color = 1;
-                                Main.chosenElements++;
+                                Main.chosenQueues++;
 
                             } else {
 
                                 rectangle.setFill(Color.rgb(156, 216, 255));
                                 color = 0;
-                                Main.chosenElements--;
+                                Main.chosenQueues--;
 
                             }
 

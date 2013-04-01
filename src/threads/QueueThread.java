@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import model.NodeElement;
+import model.Question;
 import model.QueueElement;
 import model.Score;
 
@@ -119,6 +121,36 @@ public class QueueThread extends Thread {
             y = central;
 
             this.score.selectText("    fila[tamanho] = numero;\n");
+            
+            if (queue.size() > 0) {
+            Main.canChooseQueue = true;
+            Main.chosenQueues = 0;
+            clearNodes(queue);
+            Question question = new Question(0, queue.size() - 1, queue);
+
+            if (question.askQueue(Question.POST_ELEMENT)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+            
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseQueue = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearNodes(queue);
+            
+            }
+            
             queueElement.getStackPane().setVisible(true);
             
             int cycle = 0;
@@ -171,6 +203,33 @@ public class QueueThread extends Thread {
             this.score.selectText("  } senao  {\n");
 
             this.score.selectText("    fila[0] = null;\n");
+            
+            Main.canChooseQueue = true;
+            Main.chosenQueues = 0;
+            clearNodes(queue);
+            Question question = new Question(0, 0, queue);
+
+            if (question.askQueue(Question.CORRECT_REMOVAL)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+            
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseQueue = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearNodes(queue);
+            
             QueueElement element = queue.get(0);
             int cycle = 0;
 
@@ -224,6 +283,33 @@ public class QueueThread extends Thread {
         } else {
             
             this.score.selectText("  } senao   {\n");
+            
+            
+            Main.canChooseQueue = true;
+            Main.chosenQueues = 0;
+            clearNodes(queue);
+            Question question = new Question(0, 0, queue);
+
+            if (question.askQueue(Question.FRONT_ELEMENT)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+            
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseQueue = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearNodes(queue);
             
             this.score.selectText("  retorna fila[0];\n");
             
@@ -343,4 +429,14 @@ public class QueueThread extends Thread {
         }
 
     }
+    
+    public void clearNodes(List<QueueElement> nodes) {
+
+        for (QueueElement q : nodes) {
+            q.getRectangle().setFill(Color.rgb(156, 216, 255));
+            q.setColor(0);
+        }
+
+    }
+    
 }

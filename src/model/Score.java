@@ -5,6 +5,7 @@
 package model;
 
 import execution.Main;
+import java.awt.Label;
 import java.text.DecimalFormat;
 import javafx.scene.layout.StackPane;
 
@@ -20,6 +21,7 @@ public class Score {
     private int wrongAnswers;
     private double points;
     private double progress;
+    private Label progressLabel;
 
     public Score(Main main) {
         
@@ -96,9 +98,7 @@ public class Score {
     }
     
     public void fillSetProgressBar(double percentage) {
-        
         main.getPointProgressBar().setProgress(percentage / 100.0);
-        
     }
     
     public void fillProgressBar(double percentage) {

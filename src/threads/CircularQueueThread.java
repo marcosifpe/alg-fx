@@ -14,14 +14,15 @@ import javafx.scene.Group;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import model.NodeElement;
+import model.Question;
 import model.Score;
 
 /**
  *
  * @author rafael
  */
-public class CircularQueueThread extends Thread{
-    
+public class CircularQueueThread extends Thread {
+
     private Score score;
     private Main main;
     private int operation;
@@ -36,7 +37,7 @@ public class CircularQueueThread extends Thread{
     public static final int FRONT = 3;
     public static final int TOP = 3;
     public final int Y_POSITION = 150;
-    
+
     public CircularQueueThread(Group animation, List<NodeElement> list, Score score,
             Main main, int operation, int number, NodeElement queueElement) {
         this.animation = animation;
@@ -52,7 +53,7 @@ public class CircularQueueThread extends Thread{
     public void run() {
         execute();
     }
-    
+
     public void execute() {
 
         this.score.disableCircularQueuePane();
@@ -60,28 +61,34 @@ public class CircularQueueThread extends Thread{
 
             if (operation == ENQUEUE) {
 
-//                Main.tf.setText(Constants.QUEUE_ENQUEUE);
-//                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
-//                        + Constants.UNAVAILABLE_EVENT);
-//                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                        + "tamanho = " + queue.size());
+                Main.tf.setText(Constants.CIRCULAR_ENQUEUE);
+                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
+                        + "tamanho = " + queue.size()
+                        + "\nhead = " + Main.head + "     tail = " + Main.tail);
 
                 enqueue(number);
+
+
             } else if (operation == DEQUEUE) {
-//                Main.tf.setText(Constants.QUEUE_DEQUEUE);
-//                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
-//                        + Constants.UNAVAILABLE_EVENT);
-//                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                        + "tamanho = " + queue.size());
+                Main.tf.setText(Constants.CIRCULAR_DEQUEUE);
+                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
+                        + "tamanho = " + queue.size()
+                        + "\nhead = " + Main.head + "     tail = " + Main.tail);
 
                 dequeue();
-            } else if (operation == FRONT) {
-//                Main.tf.setText(Constants.QUEUE_FRONT);
-//                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
-//                        + Constants.UNAVAILABLE_EVENT);
-//                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                        + "tamanho = " + queue.size());
 
+            } else if (operation == FRONT) {
+
+                Main.tf.setText(Constants.CIRCULAR_FRONT);
+                Main.events.setText(Constants.EVENT + Constants.LINE_BREAK
+                        + Constants.UNAVAILABLE_EVENT);
+                Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
+                        + "tamanho = " + queue.size()
+                        + "\nhead = " + Main.head + "     tail = " + Main.tail);
                 front();
             }
 
@@ -93,19 +100,19 @@ public class CircularQueueThread extends Thread{
             this.score.enableCircularQueuePane();
             Main.running = false;
         }
-        
+
     }
-    
+
     public void changeHeadPosition() {
-        
+
         double x = Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65;
-        
+
         if (main.head > 7) {
             main.head = 0;
         }
-        
+
         switch (main.head) {
-            
+
             case 0:
                 main.headElement.getStackPane().setTranslateX(x);
                 main.headElement.getStackPane().setTranslateY(40.0);
@@ -139,20 +146,20 @@ public class CircularQueueThread extends Thread{
                 main.headElement.getStackPane().setLayoutY(120.0);
                 break;
         }
-        
-        
+
+
     }
-    
+
     public void changeTailPosition() {
-        
+
         double x = Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65;
-        
+
         if (main.tail > 7) {
             main.tail = 0;
         }
-        
+
         switch (main.tail) {
-            
+
             case 0:
                 main.tailElement.getStackPane().setLayoutX(x + 40.0);
                 main.tailElement.getStackPane().setLayoutY(40.0);
@@ -186,8 +193,8 @@ public class CircularQueueThread extends Thread{
                 main.tailElement.getStackPane().setLayoutY(160.0);
                 break;
         }
-        
-        
+
+
     }
 
     public void enqueue(int number) {
@@ -195,27 +202,57 @@ public class CircularQueueThread extends Thread{
         double central = Y_POSITION + 110;
         double x, y;
 
-//        Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                + "tamanho = " + queue.size());
-//        this.score.selectText("  se (tamanho == capacidade) {\n");
+        Main.variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+                + "tamanho = " + queue.size()
+                + "\nhead = " + Main.head + "     tail = " + Main.tail);
+        this.score.selectText("  se ( (capacidade - head + tail) % capacidade \n           == capacidade - 1) {\n");
+
 
         if (queue.size() == QUEUE_CAPACITY || Math.abs(main.head - main.tail) >= QUEUE_CAPACITY) {
-//            this.score.selectText("    Erro: Não há capacidade para mais elementos!\n");
+            this.score.selectText("    Erro: A fila está cheia!\n");
             Constants.playQuestionSound(1);
             this.score.selectText("");
             return;
 
         } else {
 
-//            this.score.selectText("  } senao {\n");
+            this.score.selectText("  } senao {\n");
 
             x = Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 1.65
                     - 140 + (queue.size() * 70);
             y = central;
 
-//            this.score.selectText("    fila[tamanho] = numero;\n");
+
+            //======== QUESTION =========
+            Main.canChooseHeadTail = true;
+            Main.chosenHeadTails = 0;
+            clearIndexes();
+            Question question = new Question(0, "Tail", Main.headElement, Main.tailElement);
+
+            if (question.askCircularTail(Question.HEAD_TAIL_ENQUEUE, 1)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseHeadTail = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearIndexes();
+            //====== END QUESTION =======
+
             queueElement.getStackPane().setVisible(true);
-            
+
             int cycle = 0;
 
             do {
@@ -234,47 +271,81 @@ public class CircularQueueThread extends Thread{
                 cycle++;
             } while (cycle != 5);
 
-//            moveToLocation(queueElement.getStackPane(),
-//                    x - queueElement.getX(), y - queueElement.getY());
-            moveToLocation(queueElement.getStackPane(), 
-                    main.getCircularContainer()[main.tail].getX() - queueElement.getX() + 10.0, 
+
+            moveToLocation(queueElement.getStackPane(),
+                    main.getCircularContainer()[main.tail].getX() - queueElement.getX() + 10.0,
                     main.getCircularContainer()[main.tail].getY() - queueElement.getY() + 10.0);
             main.getCircularContainer()[main.tail].setNode(queueElement);
-            
+
+
+            this.score.selectText("    fila[ tail ] = elemento;\n");
             main.getCircularQueue().add(queueElement);
-            
+
+            this.score.selectText("    tail = (tail + 1) % capacidade;\n");
             main.tail++;
             changeTailPosition();
-            
-//            this.score.selectText("    tamanho++;\n");
-//            this.main.getCircularQueue().add(queueElement);
-//            Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                + "tamanho = " + queue.size());
-//            this.score.selectText("");
+
+            Main.variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+                    + "tamanho = " + queue.size()
+                    + "\nhead = " + Main.head + "     tail = " + Main.tail);
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
     }
 
     public void dequeue() {
 
-//        Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                + "tamanho = " + queue.size());
-//        
-//        this.score.selectText("  se(tamanho == 0) {\n");
-        
+        Main.variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+                + "tamanho = " + queue.size()
+                + "\nhead = " + Main.head + "     tail = " + Main.tail);
+
+        this.score.selectText("  se((capacidade - head + tail) % capacidade == 0) {\n");
+
         if (queue.isEmpty() || main.head == main.tail) {
-            
-//            this.score.selectText("    Erro: Não há elementos à serem retirados!\n");
+
+            this.score.selectText("    Erro: A fila está vazia!\n");
             Constants.playQuestionSound(1);
             this.score.selectText("");
             return;
-            
+
         } else {
-            
-//            this.score.selectText("  } senao  {\n");
-//
-//            this.score.selectText("    fila[0] = null;\n");
-//            NodeElement element = queue.get(0);
+
+            this.score.selectText("  } senao {\n");
+
+            //======== QUESTION =========
+            Main.canChooseHeadTail = true;
+            Main.chosenHeadTails = 0;
+            clearIndexes();
+            Question question = new Question(0, "Head", Main.headElement, Main.tailElement);
+
+            if (question.askCircularHead(Question.HEAD_TAIL_DEQUEUE, 1)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseHeadTail = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearIndexes();
+            //====== END QUESTION =======
+
+            this.score.selectText("    fila[ head ] = null;\n");
             NodeElement element = main.getCircularContainer()[main.head].getNode();
             int cycle = 0;
 
@@ -296,44 +367,82 @@ public class CircularQueueThread extends Thread{
 
             moveUpwards(element.getStackPane(), 150);
             element.getStackPane().setVisible(false);
-            
+
             main.getCircularContainer()[main.head].setNode(null);
             main.getCircularQueue().remove(element);
-            
+
+            this.score.selectText("    head = (head + 1) % capacidade;\n");
             main.head++;
             changeHeadPosition();
             
-//            this.score.selectText("    tamanho--;\n");
-//            queue.remove(0);
-//            Main.variables.setText(Constants.VARIABLES + "capacidade = " + QUEUE_CAPACITY + "    "
-//                + "tamanho = " + queue.size());
-//            this.score.selectText("");
+            Main.variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+                + "tamanho = " + queue.size()
+                + "\nhead = " + Main.head + "     tail = " + Main.tail);
             
+            try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StackThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
         }
 
     }
-    
+
     public void front() {
+
+        Main.tf.setText(Constants.CIRCULAR_FRONT);
         
-        Main.tf.setText(Constants.QUEUE_FRONT);
-        
-        this.score.selectText("  se (tamanho == 0) {\n");
-        
+        Main.variables.setText(Constants.VARIABLES + "capacidade = " + 7 + "    "
+                + "tamanho = " + queue.size()
+                + "\nhead = " + Main.head + "     tail = " + Main.tail);
+
+        this.score.selectText("  se((capacidade - head + tail) % capacidade == 0) {\n");
+
         if (queue.isEmpty()) {
-            
-            this.score.selectText("    Erro: Não há elementos na fila!\n");
+
+            this.score.selectText("    Erro: A fila está vazia!\n");
             Constants.playQuestionSound(1);
             this.score.selectText("");
             return;
-            
+
         } else {
+
+            this.score.selectText("  } senao {\n");
             
-            this.score.selectText("  } senao   {\n");
+            //======== QUESTION =========
+            Main.canChooseHeadTail = true;
+            Main.chosenHeadTails = 0;
+            clearIndexes();
+            Question question = new Question(0, "Head", Main.headElement, Main.tailElement);
+
+            if (question.askCircularHead(Question.HEAD_TAIL_FRONT, 1)) {
+                Constants.playQuestionSound(0);
+                this.score.addRightAnswer();
+            } else {
+                Constants.playQuestionSound(1);
+                this.score.addWrongAnswer();
+            }
+
+            this.score.addTotal();
+            this.score.fillSetProgressBar(this.score.getPoints());
+
+            Main.canChooseHeadTail = false;
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SortingThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            clearIndexes();
+            //====== END QUESTION =======
             
-            this.score.selectText("  retorna fila[0];\n");
             
-            NodeElement s = queue.get(0);
+            this.score.selectText("    retorna fila[ head ];\n");
             
+            NodeElement s = main.getCircularContainer()[main.head].getNode();
+
             int cycle = 0;
             do {
                 s.getCircle().setFill(Color.rgb(181, 97, 116));
@@ -350,11 +459,11 @@ public class CircularQueueThread extends Thread{
                 }
                 cycle++;
             } while (cycle != 5);
-            
+
             this.score.selectText("");
-            
+
         }
-        
+
     }
 
     public void moveRight(StackPane pane, int quantity) {
@@ -448,5 +557,21 @@ public class CircularQueueThread extends Thread{
         }
 
     }
-    
+
+    public void clearNodes(List<NodeElement> nodes) {
+
+        for (NodeElement q : queue) {
+            q.getCircle().setFill(Color.rgb(156, 216, 255));
+            q.setColor(0);
+        }
+
+    }
+
+    public void clearIndexes() {
+        Main.headElement.getRectangle().setFill((Color.rgb(156, 216, 255)));
+        Main.tailElement.getRectangle().setFill((Color.rgb(156, 216, 255)));
+        Main.headElement.setColor(0);
+        Main.tailElement.setColor(0);
+
+    }
 }
