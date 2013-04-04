@@ -46,6 +46,8 @@ public class Main extends Application {
     private FlowPane stackFlowPane, listFlowPane, queueFlowPane, circularQueueFlowPane;
     private FlowPane flowpane, questionPane;
     private TextField numberField;
+    private int tempMin, tempMax;
+    private NodeElement sortedVector[];
     private boolean decision = false;
     private int returningNumber = -2;
     private int listPosition;
@@ -210,6 +212,18 @@ public class Main extends Application {
         this.returningNumber = returningNumber;
     }
 
+    private FlowPane messagePane;
+    
+    public void createMessagePane(String text) {
+        
+        messagePane = new FlowPane();
+        messagePane.setPrefHeight(400);
+        messagePane.setPrefWidth(400);
+        messagePane.setTranslateX(Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2);
+        messagePane.setTranslateY(Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2);
+//        Toolkit.getDefaultToolkit().getScreenSize().getWidth()
+    }
+    
     public void createNumberQuestion() {
 
         events.setText(Constants.EVENT + "\n\n"
@@ -1014,8 +1028,7 @@ public class Main extends Application {
 
 
     }
-    private int tempMin, tempMax;
-    private NodeElement sortedVector[];
+    
 
     public void createCountingSortElements() {
 
